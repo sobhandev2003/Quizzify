@@ -3,8 +3,13 @@ const App = express();
 import dotenv from 'dotenv';
 dotenv.config();
 import usersRoutes from  "./routes/users_route"
-App.use("/users",usersRoutes)
+import {errorHandler} from './middiliwer/errorHandeler'
+import { connectDB } from "./config/conectDb";
+connectDB();
+App.use(express.json());
 
+App.use("/users",usersRoutes)
+App.use(errorHandler)
 const Port=process.env.PORT || 5000 
 App.listen(Port, () => {
     console.log(`App is running http://127.0.0.1:${Port}`);
