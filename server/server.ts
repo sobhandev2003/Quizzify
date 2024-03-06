@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 const App = express();
 import dotenv from 'dotenv';
 dotenv.config();
@@ -6,6 +7,7 @@ import usersRoutes from  "./routes/users_route"
 import {errorHandler} from './middiliwer/errorHandeler'
 import { connectDB } from "./config/conectDb";
 connectDB();
+App.use(cors())
 App.use(express.json());
 
 App.use("/users",usersRoutes)

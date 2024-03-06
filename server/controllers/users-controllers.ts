@@ -7,7 +7,7 @@ import {
     phoneNumberValidator,
     userNameValidator
 } from '../validator';
-import { SendEmail, sendAccountVerificationEmail } from '../services/sendEmail';
+import { SendEmail, senForgotPasswordLink, sendAccountVerificationEmail } from '../services/sendEmail';
 import randomBytes from "randombytes";
 
 //SECTION - Register new User
@@ -16,7 +16,8 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
     try {
         const { UserName, Email, phoneNumber, Password } = req.body;
         if (!UserName || !Email || !phoneNumber || !Password) {
-            console.error("Not vail input");
+            res.status(400)
+            throw new Error("Not vail input")
         }
         userNameValidator(UserName)
         emailValidator(Email);
@@ -59,7 +60,7 @@ export const verifyEmail = async (req: Request, res: Response, next: NextFunctio
         }
         if (user.IsVerified) {
             // Token is not valid or user is already verified
-           res.status(404)
+            res.status(404)
             throw new Error('User is already verified.');
         }
 
@@ -80,4 +81,63 @@ export const verifyEmail = async (req: Request, res: Response, next: NextFunctio
     } catch (error) {
         next(error)
     }
+}
+
+export const forgetPasswordRequest = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+ 
+        
+        const { email } = req.body;
+        if (!email) {
+            res.status(400)
+            throw new Error("Not vail input")
+        }
+        emailValidator(email)
+        const user = await User.findOne({ Email: email });
+        if (!user) {
+            res.status(404);
+            throw new Error("Email not register")
+        }
+        const VerificationToken = randomBytes(20).toString('hex')
+        user.VerificationToken = VerificationToken;
+        await user.save();
+        senForgotPasswordLink(user.id, user.VerificationToken, user.Email);
+        res.status(200).json({success:true,message:"Password reset link send on your email"})
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const resetPassword = async (req: Request, res: Response, next: NextFunction) => {
+
+    try {
+      
+        const { userId, VerificationToken, newPassword } = req.body;
+        if (!userId || !VerificationToken || !newPassword) {
+            res.status(400)
+            throw new Error("Input not valid")
+        }
+        PasswordValidator(newPassword);
+        const user = await User.findById(userId);
+        if (!user) {
+            res.status(404);
+            throw new Error("User account not Found")
+        }
+
+        if (VerificationToken!==user.VerificationToken) {
+            res.status(400);
+            throw new Error("Password reset token not valid")
+        }
+
+        const hashPassword = await bcrypt.hash(newPassword, Number(process.env.SALT_ROUND));
+        user.Password=hashPassword;
+        user.Password = newPassword;
+        user.VerificationToken="";
+        await user.save();
+        res.status(200).json({success:true,message:"Password reset successful"})
+    } catch (error) {
+        next(error)
+    }
+
 }
