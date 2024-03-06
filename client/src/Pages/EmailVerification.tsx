@@ -9,7 +9,7 @@ const EmailVerification = () => {
     const [verificationfedback, setVerificationfedback] = useState("");
     const requestToVerify = async () => {
         try {
-            const response = await fetch(`http://127.0.0.1:5001/users/verify-email/${userId}/${VerificationToken}`);
+            const response = await fetch(`${import.meta.env.VITE_BASE_URL}/users/verify-email/${userId}/${VerificationToken}`);
             const data = await response.json()
             console.log(data);
             if (response.ok) {
