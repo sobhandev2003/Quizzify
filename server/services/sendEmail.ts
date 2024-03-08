@@ -1,9 +1,10 @@
 var nodemailer = require('nodemailer');
+import { NextFunction } from "express";
 import User from "../models/users-schema";
  
-export const sendAccountVerificationEmail=(userId: String, AccountActiveToken: String, Email: String) => {
+export const sendAccountVerificationEmail=(userId: String, AccountActiveToken: String, Email: String,next:NextFunction) => {
     const VerificationLink = `http://localhost:3000/users/verify-email/${userId}/${AccountActiveToken}`
-    SendEmail(Email,"Active your account click bellow link", VerificationLink,"verify Your quizzify account","5 minutes");
+    SendEmail(Email,"Active your account click bellow link", VerificationLink,"verify Your quizzify account","5 minutes",next);
     setTimeout(async () => {
         try {
             const user = await User.findByIdAndUpdate(
@@ -12,15 +13,15 @@ export const sendAccountVerificationEmail=(userId: String, AccountActiveToken: S
                 { new: true } 
             );
         } catch (error) {
-            console.error("Error clearing AccountActiveToken:", error);
+            next(error)
         }
     }, 5*60 * 1000);
 }
 
-export const senForgotPasswordLink=(userId:String,AccountActiveToken:String,Email:String)=>{
+export const senForgotPasswordLink=(userId:String,AccountActiveToken:String,Email:String,next:NextFunction)=>{
    
     const VerificationLink = `http://localhost:3000/users/reset-password/${userId}/${AccountActiveToken}`
-    SendEmail(Email, "Reset your account password click bellow link", VerificationLink,"Forgot your quizzify account password","20 minutes");
+    SendEmail(Email, "Reset your account password click bellow link", VerificationLink,"Forgot your quizzify account password","20 minutes",next);
 
     setTimeout(async () => {
         try {
@@ -30,12 +31,12 @@ export const senForgotPasswordLink=(userId:String,AccountActiveToken:String,Emai
                 { new: true } 
             );
         } catch (error) {
-            console.error("Error clearing AccountActiveToken:", error);
+           next(error)
         }
     }, 20*60 * 1000);
 }
 
-export const SendEmail = (userEmail: String,reason:String, link: String,linkText:String,linkAcitveTime:String) => {
+export const SendEmail = async(userEmail: String,reason:String, link: String,linkText:String,linkAcitveTime:String,next:NextFunction) => {
     try {
         const transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -69,6 +70,6 @@ export const SendEmail = (userEmail: String,reason:String, link: String,linkText
             }
         });
     } catch (error) {
-        console.error(error);
+        next(Error)
     }
 }

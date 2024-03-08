@@ -13,7 +13,7 @@ import { SendEmail, senForgotPasswordLink, sendAccountVerificationEmail } from '
 import randomBytes from "randombytes";
 import jwt from "jsonwebtoken";
 import { CustomRequest } from '../middiliwer/tokenValidator';
-import { uploadImageInGoogleDrive } from '../services/uploadImageInCloudinary';
+import { uploadImageInGoogleDrive } from '../services/uploadImageInDrive';
 // import {  } from "../aset/gdriveapi-416606-886986fd7329.json";
 //SECTION - Register new User
 //NOTE - route '/users/'
@@ -48,7 +48,7 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
         const user = await User.create({
             UserName, Email, phoneNumber, Password: hashPassword, AccountActiveToken
         });
-        sendAccountVerificationEmail(user.id, user.AccountActiveToken, user.Email);
+        sendAccountVerificationEmail(user.id, user.AccountActiveToken, user.Email, next);
 
         res.json({ success: true, message: "Successfully Register account" })
 
@@ -110,7 +110,7 @@ export const forgetPasswordRequest = async (req: Request, res: Response, next: N
         const AccountActiveToken = randomBytes(20).toString('hex')
         user.AccountActiveToken = AccountActiveToken;
         await user.save();
-        senForgotPasswordLink(user.id, user.AccountActiveToken, user.Email);
+        senForgotPasswordLink(user.id, user.AccountActiveToken, user.Email, next);
         res.status(200).json({ success: true, message: "Password reset link send on your email" })
 
     } catch (error) {
@@ -169,13 +169,13 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
             res.status(404);
             throw new Error("User not found")
         }
-//NOTE - if user account is not verified
+        //NOTE - if user account is not verified
         if (!user.IsVerified) {
             res.status(405);
             const AccountActiveToken = randomBytes(20).toString('hex')
             user.AccountActiveToken = AccountActiveToken;
             await user.save();
-            sendAccountVerificationEmail(user.id, user.AccountActiveToken, user.Email);
+            sendAccountVerificationEmail(user.id, user.AccountActiveToken, user.Email, next);
             throw new Error("User email not verified.Your email verification link sent on you email");
         }
 
@@ -206,30 +206,42 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
 
 }
 
-export const getUserDetails=(req: Request, res: Response, next: NextFunction)=>{
-try {
-   const user = (req as CustomRequest).user;
-   const tokenExpireTime = (req as CustomRequest).expireTime;
-
-    res.json({success:true,user,tokenExpireTime})
-
-} catch (error) {
-    next(error)
-}
-}
-
-export const changeProfilePhoto=async(req: Request, res: Response, next: NextFunction)=>{
+export const getUserDetails = (req: Request, res: Response, next: NextFunction) => {
     try {
-      const  {filename,mimetype,originalname}=req.file!
-      const user = (req as CustomRequest).user;
-      const saveName=user.id+originalname;
-   const imageId=await uploadImageInGoogleDrive(filename,mimetype,saveName)
-  
-    
-    res.json({imageId})
+        const user = (req as CustomRequest).user;
+        const tokenExpireTime = (req as CustomRequest).expireTime;
+
+        res.json({ success: true, user, tokenExpireTime })
 
     } catch (error) {
-       next(error); 
+        next(error)
+    }
+}
+
+export const changeProfilePhoto = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { filename, mimetype, originalname } = req.file!
+        const user = await User.findById((req as CustomRequest).user.id);
+        if (!user) {
+            res.status(404);
+            throw new Error("User account not found")
+
+        }
+        const saveName = user.id + user.Email.split("@")[0];
+        // console.log(user.Email.split("@")[0]);
+
+        const folderId = process.env.GOOGLE_DRIVE_PROFILE_PHOTO_FOLDER_ID!
+        const ProfilePhotoId: String | null = user.ProfilePhotoId;
+        const response = await uploadImageInGoogleDrive(filename, mimetype, saveName, folderId, ProfilePhotoId)
+
+        await User.findByIdAndUpdate(user.id,
+            { ProfilePhotoId: response.id },
+            { $set: true })
+
+        res.json({ success: true })
+
+    } catch (error) {
+        next(error);
     }
 }
 

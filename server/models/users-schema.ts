@@ -27,6 +27,10 @@ const usersSchema=new mongoose.Schema({
         required:[true,"Phone number mandatory"],
             unique:[true,"This phone number already register"]
     },
+    ProfilePhotoId:{
+        type:String,
+        default:null
+    },
     Password:{
         type:String,
         required:[true,"Password mandatory"]
