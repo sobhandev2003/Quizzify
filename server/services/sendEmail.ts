@@ -1,41 +1,41 @@
 var nodemailer = require('nodemailer');
 import User from "../models/users-schema";
-
-export const sendAccountVerificationEmail=(userId: String, VerificationToken: String, Email: String) => {
-    const VerificationLink = `http://localhost:3000/users/verify-email/${userId}/${VerificationToken}`
-    SendEmail(Email, "Email from quizzify", "Welcome to quizzify", VerificationLink,"verify Your quizzify account","5 minutes");
+ 
+export const sendAccountVerificationEmail=(userId: String, AccountActiveToken: String, Email: String) => {
+    const VerificationLink = `http://localhost:3000/users/verify-email/${userId}/${AccountActiveToken}`
+    SendEmail(Email,"Active your account click bellow link", VerificationLink,"verify Your quizzify account","5 minutes");
     setTimeout(async () => {
         try {
             const user = await User.findByIdAndUpdate(
                 userId,
-                { VerificationToken: '' },
+                { AccountActiveToken: '' },
                 { new: true } 
             );
         } catch (error) {
-            console.error("Error clearing VerificationToken:", error);
+            console.error("Error clearing AccountActiveToken:", error);
         }
     }, 5*60 * 1000);
 }
 
-export const senForgotPasswordLink=(userId:String,VerificationToken:String,Email:String)=>{
+export const senForgotPasswordLink=(userId:String,AccountActiveToken:String,Email:String)=>{
    
-    const VerificationLink = `http://localhost:3000/users/reset-password/${userId}/${VerificationToken}`
-    SendEmail(Email, "Email from quizzify", "Welcome to quizzify", VerificationLink,"Forgot your quizzify account password","20 minutes");
+    const VerificationLink = `http://localhost:3000/users/reset-password/${userId}/${AccountActiveToken}`
+    SendEmail(Email, "Reset your account password click bellow link", VerificationLink,"Forgot your quizzify account password","20 minutes");
 
     setTimeout(async () => {
         try {
             const user = await User.findByIdAndUpdate(
                 userId,
-                { VerificationToken: '' },
+                { AccountActiveToken: '' },
                 { new: true } 
             );
         } catch (error) {
-            console.error("Error clearing VerificationToken:", error);
+            console.error("Error clearing AccountActiveToken:", error);
         }
     }, 20*60 * 1000);
 }
 
-export const SendEmail = (userEmail: String, Subject: String, text: String, link: String,linkText:String,linkAcitveTime:String) => {
+export const SendEmail = (userEmail: String,reason:String, link: String,linkText:String,linkAcitveTime:String) => {
     try {
         const transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -49,11 +49,11 @@ export const SendEmail = (userEmail: String, Subject: String, text: String, link
         const mailOptions = {
             from: '"qizzify verify mail "' + process.env.QUIZZIFY_EMAIL || '',
             to: userEmail,
-            subject: Subject,
-            text: text,
+            subject: "Email from quizzify",
+            text: "Welcome to quizzify",
             html: `
         <div>
-        <p>Active your account click bellow link 👇</p>
+        <p>${reason} 👇</p>
         <a href=${link}>${linkText}</a>
         <br/>
         <b>Link  valid ${linkAcitveTime} from get this email.</b>

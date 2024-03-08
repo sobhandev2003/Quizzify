@@ -31,7 +31,8 @@ const usersSchema=new mongoose.Schema({
         type:String,
         required:[true,"Password mandatory"]
     },
-    VerificationToken:{
+    
+    AccountActiveToken:{
         type:String,
         expireAfterSeconds:10,
         default:null
