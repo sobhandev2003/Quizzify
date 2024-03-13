@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { HttpErrorCode } from "../httpError";
+import { HttpErrorCode } from "../assets/httpError";
 export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
     const statusCode = res.statusCode
     switch (statusCode) {

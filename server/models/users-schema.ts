@@ -1,5 +1,9 @@
 import mongoose from "mongoose";
 import { emailValidator, phoneNumberValidator } from "../validator";
+//TODO - 
+const AttendQuizDetails=new mongoose.Schema({
+
+})
 
 const usersSchema=new mongoose.Schema({
     UserName:{
@@ -36,7 +40,7 @@ const usersSchema=new mongoose.Schema({
         required:[true,"Password mandatory"]
     },
     
-    AccountActiveToken:{
+    VerificationToken:{
         type:String,
         expireAfterSeconds:10,
         default:null
@@ -44,8 +48,14 @@ const usersSchema=new mongoose.Schema({
     IsVerified:{
         type:Boolean,
         default:false
-    }
-
-})
+    },
+    TotalAttendNumberOfQuiz:{
+        type:Number,
+        default:0
+    },
+    AttendQuiz:[AttendQuizDetails],
+},
+{timestamps:true}
+)
 
 export default mongoose.model("User",usersSchema);

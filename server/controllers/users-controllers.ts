@@ -3,18 +3,22 @@ import User from "../models/users-schema";
 import bcrypt from "bcrypt"
 import fs from 'fs'
 import path from "path";
+
 import {
     PasswordValidator,
     emailValidator,
     phoneNumberValidator,
     userNameValidator
 } from '../validator';
-import { SendEmail, senForgotPasswordLink, sendAccountVerificationEmail } from '../services/sendEmail';
+import { senForgotPasswordLink, sendAccountVerificationEmail } from '../services/sendEmail';
 import randomBytes from "randombytes";
 import jwt from "jsonwebtoken";
 import { CustomRequest } from '../middiliwer/tokenValidator';
 import { uploadImageInGoogleDrive } from '../services/uploadImageInDrive';
-// import {  } from "../aset/gdriveapi-416606-886986fd7329.json";
+import { imageMimeTypes } from '../assets/imagefiletype';
+
+
+
 //SECTION - Register new User
 //NOTE - route '/users/'
 export const registerUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -43,12 +47,12 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
         }
 
         //NOTE - create new user
-        const AccountActiveToken = randomBytes(20).toString('hex')
+        const VerificationToken = randomBytes(20).toString('hex')
         const hashPassword = await bcrypt.hash(Password, Number(process.env.SALT_ROUND))
         const user = await User.create({
-            UserName, Email, phoneNumber, Password: hashPassword, AccountActiveToken
+            UserName, Email, phoneNumber, Password: hashPassword, VerificationToken
         });
-        sendAccountVerificationEmail(user.id, user.AccountActiveToken, user.Email, next);
+        await sendAccountVerificationEmail(user.id, user.VerificationToken, user.Email);
 
         res.json({ success: true, message: "Successfully Register account" })
 
@@ -56,6 +60,8 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
         next(error)
     }
 }
+
+//SECTION - Verify user Email and set User account verified
 export const verifyEmail = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id, token } = req.params;
@@ -69,15 +75,15 @@ export const verifyEmail = async (req: Request, res: Response, next: NextFunctio
             throw new Error('User is already verified.');
         }
 
-        if (user!.AccountActiveToken !== token || user!.AccountActiveToken === null) {
+        if (user!.VerificationToken !== token || user!.VerificationToken === null) {
             res.status(400);
             throw new Error("Verification Link expire.")
 
         }
 
-        if (token === user!.AccountActiveToken) {
+        if (token === user!.VerificationToken) {
             user!.IsVerified = true;
-            user!.AccountActiveToken = '';
+            user!.VerificationToken = '';
             await user?.save()
             res.json({ success: true, message: "Email verified" })
 
@@ -87,7 +93,7 @@ export const verifyEmail = async (req: Request, res: Response, next: NextFunctio
         next(error)
     }
 }
-
+//SECTION - Request to Forget user account password .
 export const forgetPasswordRequest = async (req: Request, res: Response, next: NextFunction) => {
     try {
 
@@ -107,26 +113,28 @@ export const forgetPasswordRequest = async (req: Request, res: Response, next: N
             res.status(400);
             throw new Error("This Account is not active")
         }
-        const AccountActiveToken = randomBytes(20).toString('hex')
-        user.AccountActiveToken = AccountActiveToken;
+        const VerificationToken = randomBytes(20).toString('hex')
+        user.VerificationToken = VerificationToken;
         await user.save();
-        senForgotPasswordLink(user.id, user.AccountActiveToken, user.Email, next);
+        await senForgotPasswordLink(user.id, user.VerificationToken, user.Email);
         res.status(200).json({ success: true, message: "Password reset link send on your email" })
 
     } catch (error) {
         next(error)
     }
 }
-
+//SECTION - Reset User account password
 export const resetPassword = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
 
-        const { userId, AccountActiveToken, newPassword } = req.body;
-        if (!userId || !AccountActiveToken || !newPassword) {
+        const { userId, VerificationToken, newPassword } = req.body;
+
+        if (!userId || !VerificationToken || !newPassword) {
             res.status(400)
             throw new Error("Input not valid")
         }
+
         PasswordValidator(newPassword);
         const user = await User.findById(userId);
         if (!user) {
@@ -138,7 +146,7 @@ export const resetPassword = async (req: Request, res: Response, next: NextFunct
             throw new Error("This Account is not active")
         }
 
-        if (AccountActiveToken !== user.AccountActiveToken) {
+        if (VerificationToken !== user.VerificationToken) {
             res.status(400);
             throw new Error("Password reset token not valid")
         }
@@ -146,7 +154,7 @@ export const resetPassword = async (req: Request, res: Response, next: NextFunct
         const hashPassword = await bcrypt.hash(newPassword, Number(process.env.SALT_ROUND));
         user.Password = hashPassword;
 
-        user.AccountActiveToken = "";
+        user.VerificationToken = "";
         await user.save();
         res.status(200).json({ success: true, message: "Password reset successful" })
     } catch (error) {
@@ -155,6 +163,7 @@ export const resetPassword = async (req: Request, res: Response, next: NextFunct
 
 }
 
+//SECTION - Login user account with valid email and password.
 export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { email, password } = req.body
@@ -172,10 +181,10 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
         //NOTE - if user account is not verified
         if (!user.IsVerified) {
             res.status(405);
-            const AccountActiveToken = randomBytes(20).toString('hex')
-            user.AccountActiveToken = AccountActiveToken;
+            const VerificationToken = randomBytes(20).toString('hex')
+            user.VerificationToken = VerificationToken;
             await user.save();
-            sendAccountVerificationEmail(user.id, user.AccountActiveToken, user.Email, next);
+            await sendAccountVerificationEmail(user.id, user.VerificationToken, user.Email);
             throw new Error("User email not verified.Your email verification link sent on you email");
         }
 
@@ -194,7 +203,7 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
                 }
             );
 
-            res.status(200).send(authorizationToken);
+            res.status(200).json({ Success: true, authorizationToken });
         }
         else {
             res.status(401);
@@ -206,6 +215,7 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
 
 }
 
+//SECTION -  Get login user details
 export const getUserDetails = (req: Request, res: Response, next: NextFunction) => {
     try {
         const user = (req as CustomRequest).user;
@@ -218,27 +228,42 @@ export const getUserDetails = (req: Request, res: Response, next: NextFunction) 
     }
 }
 
+//SECTION - Change and upload profile photo
 export const changeProfilePhoto = async (req: Request, res: Response, next: NextFunction) => {
+
     try {
-        const { filename, mimetype, originalname } = req.file!
+        const file = req.file!
+        if (!file) {
+            res.status(400);
+            throw new Error("File is missing.")
+        }
+        const { buffer, mimetype } = file
+        //NOTE - Check mime types
+        if (!imageMimeTypes.includes(mimetype)) {
+            res.status(400);
+            throw new Error("Accept .jpeg, .png, and .webp format.")
+        }
+
+        //NOTE - Find user account from User schema
         const user = await User.findById((req as CustomRequest).user.id);
         if (!user) {
             res.status(404);
             throw new Error("User account not found")
-
         }
-        const saveName = user.id + user.Email.split("@")[0];
-        // console.log(user.Email.split("@")[0]);
-
+        //NOTE - Create file which name save in drive
+        const fileName = user.id + user.Email.split("@")[0];
+        //NOTE - get folder Id for save photo in this  folder. 
         const folderId = process.env.GOOGLE_DRIVE_PROFILE_PHOTO_FOLDER_ID!
+        //NOTE - Get user previous profile phot id
         const ProfilePhotoId: String | null = user.ProfilePhotoId;
-        const response = await uploadImageInGoogleDrive(filename, mimetype, saveName, folderId, ProfilePhotoId)
-
+        //NOTE - Save profile photo in Google drive
+        const fileId = await uploadImageInGoogleDrive(fileName, mimetype, buffer, folderId, ProfilePhotoId)
+        //NOTE - Update profile photo id in database
         await User.findByIdAndUpdate(user.id,
-            { ProfilePhotoId: response.id },
+            { ProfilePhotoId: fileId },
             { $set: true })
 
-        res.json({ success: true })
+        res.json({ success: true, message: "Successfully update" })
 
     } catch (error) {
         next(error);

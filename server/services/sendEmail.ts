@@ -1,43 +1,50 @@
 var nodemailer = require('nodemailer');
-import { NextFunction } from "express";
+import emailTemplate from "../assets/emailTemplet";
 import User from "../models/users-schema";
- 
-export const sendAccountVerificationEmail=(userId: String, AccountActiveToken: String, Email: String,next:NextFunction) => {
-    const VerificationLink = `http://localhost:3000/users/verify-email/${userId}/${AccountActiveToken}`
-    SendEmail(Email,"Active your account click bellow link", VerificationLink,"verify Your quizzify account","5 minutes",next);
-    setTimeout(async () => {
-        try {
-            const user = await User.findByIdAndUpdate(
-                userId,
-                { AccountActiveToken: '' },
-                { new: true } 
-            );
-        } catch (error) {
-            next(error)
-        }
-    }, 5*60 * 1000);
-}
-
-export const senForgotPasswordLink=(userId:String,AccountActiveToken:String,Email:String,next:NextFunction)=>{
-   
-    const VerificationLink = `http://localhost:3000/users/reset-password/${userId}/${AccountActiveToken}`
-    SendEmail(Email, "Reset your account password click bellow link", VerificationLink,"Forgot your quizzify account password","20 minutes",next);
+const clientSiteBaseUrl=process.env.CLIENT_SITE_BASE_URL;
+//NOTE - Send account verification Email.
+export const sendAccountVerificationEmail = async (userId: String, VerificationToken: String, Email: String) => {
+    const VerificationLink = `${clientSiteBaseUrl}/users/verify-email/${userId}/${VerificationToken}`
+    
+    const reason="active your account"
+    SendEmail(Email, reason, VerificationLink, "5 minutes");
 
     setTimeout(async () => {
         try {
             const user = await User.findByIdAndUpdate(
                 userId,
                 { AccountActiveToken: '' },
-                { new: true } 
+                { new: true }
             );
         } catch (error) {
-           next(error)
+            throw new Error("Some thing wrong.")
         }
-    }, 20*60 * 1000);
+    }, 5 * 60 * 1000);
 }
+//NOTE - Send forget password mail.
+export const senForgotPasswordLink = async (userId: String, VerificationToken: String, Email: String) => {
 
-export const SendEmail = async(userEmail: String,reason:String, link: String,linkText:String,linkAcitveTime:String,next:NextFunction) => {
+    const VerificationLink = `${clientSiteBaseUrl}/users/reset-password/${userId}/${VerificationToken}`
+        const reason="Reset your account password"
+
+    SendEmail(Email, reason, VerificationLink, "20 minutes");
+
+    setTimeout(async () => {
+        try {
+            const user = await User.findByIdAndUpdate(
+                userId,
+                { AccountActiveToken: '' },
+                { new: true }
+            );
+        } catch (error) {
+            throw new Error("Some thing wrong.")
+        }
+    }, 20 * 60 * 1000);
+}
+//Note send email
+export const SendEmail = async (userEmail: String, reason: String, link: String, linkAcitveTime: String) => {
     try {
+        //NOTE - Create a new service which use nodemailer to send Email. 
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
@@ -46,22 +53,17 @@ export const SendEmail = async(userEmail: String,reason:String, link: String,lin
             }
         });
 
-
+//NOTE - Create maliOption or email details - form,to,subject body.
         const mailOptions = {
             from: '"qizzify verify mail "' + process.env.QUIZZIFY_EMAIL || '',
             to: userEmail,
             subject: "Email from quizzify",
             text: "Welcome to quizzify",
-            html: `
-        <div>
-        <p>${reason} 👇</p>
-        <a href=${link}>${linkText}</a>
-        <br/>
-        <b>Link  valid ${linkAcitveTime} from get this email.</b>
-        </div>
-        `
+            html: emailTemplate(link,linkAcitveTime,reason)
+        
         };
 
+        //NOTE - send Email use transport service
         transporter.sendMail(mailOptions, function (error: Error, info: any) {
             if (error) {
                 throw new Error(error.message)
@@ -70,6 +72,6 @@ export const SendEmail = async(userEmail: String,reason:String, link: String,lin
             }
         });
     } catch (error) {
-        next(Error)
+        throw new Error("Server Not response")
     }
 }

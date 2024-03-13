@@ -36,7 +36,7 @@ const EmailVerification = () => {
             <h3>{verificationfedback}</h3>
         </>
             :
-            <><h1>Not Found</h1></>}
+            <><h1>{verificationfedback}</h1></>}
     </div>
 }
 

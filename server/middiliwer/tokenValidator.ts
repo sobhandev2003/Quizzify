@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from "express"
 import jwt, { JwtPayload } from "jsonwebtoken";
+import mongoose from "mongoose";
 export interface CustomRequest extends Request {
     user: {
-        id: String,
+        id: mongoose.Schema.Types.ObjectId,
         userName: String,
         email: String,
     },
@@ -11,13 +12,13 @@ export interface CustomRequest extends Request {
 
 export interface PayloadInterface {
     user: {
-        id: '65e8b76084e7cba5697adfe8',
-        userName: 'Sob',
-        email: 'jonathan.wills@farmoaks.com'
+        id: mongoose.Schema.Types.ObjectId,
+        userName: String,
+        email: String
     },
-    expireTime: 864000000,
-    iat: 1709816110,
-    exp: 1710680110
+    expireTime: Number,
+    // iat: 1709816110,
+    // exp: 1710680110
 }
 export const validation = async (req: Request, res: Response, next: NextFunction) => {
     try {

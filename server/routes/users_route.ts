@@ -12,20 +12,9 @@ import {
 
 import { Request, Response, Router } from 'express';
 import { validation } from '../middiliwer/tokenValidator';
+import { upload } from '../config/connectDb';
 
-import multer from "multer"
-// const upload = multer({ dest: 'uploads/' })
-// const upload = multer().single('avatar')
-const storage=multer.diskStorage({
-    destination:(req,file,cb)=>{
-            return cb(null,"./uploads")
-    },
-    filename:(req,file,cb)=>{
-        const fileName=Date.now()+"quizzify-profile-photo"+file.originalname;
-            cb(null,fileName)
-    }
-})
-const upload = multer({ storage: storage })
+
 const Route = Router();
 
 //NOTE - Register new user
