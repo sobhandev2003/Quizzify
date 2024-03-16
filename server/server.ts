@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 import usersRoutes from  "./routes/users_route"
 import quizRoute from "./routes/quiz-route";
+import questionRoute from "./routes/question-route";
 import {errorHandler} from './middiliwer/errorHandeler'
 import { connectDB } from "./config/connectDb";
 
@@ -15,6 +16,7 @@ App.use(express.json());
 // uploadImageInGoogleDrive()
 App.use("/users",usersRoutes);
 App.use("/quiz",quizRoute)
+App.use("/question",questionRoute)
 App.use(errorHandler)
 const Port=process.env.PORT || 5000 
 App.listen(Port, () => {

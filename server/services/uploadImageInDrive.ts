@@ -21,6 +21,7 @@ export const googleDriveOauth2client = new google.auth.OAuth2(
   process.env.GOOGLE_DRIVE_API_REDIRECT_URL
 );
 
+
 googleDriveOauth2client.setCredentials({
   refresh_token: process.env.GOOGLE_DRIVE_API_REFRESH_TOKEN
 });
@@ -41,6 +42,8 @@ export const uploadImageInGoogleDrive = async (
   parentsId: String,
   profilePhotoId: String | null) => {
 
+    // console.log(googleDrive.permissions);
+    
   const imageType = mimeType.split("/")[1]
   //NOTE - create local file path
   const localFilePath = path.join(__dirname, `../uploads/${fileName}.${imageType}`);
@@ -49,6 +52,7 @@ export const uploadImageInGoogleDrive = async (
 
     //NOTE -  save buffer data in local. 
     await sharp(buffer).toFile(localFilePath);
+// console.log("ch1");
 
     //NOTE - If Pervious profile photo exit then Delete this photo
     if (profilePhotoId !== null) {
@@ -69,6 +73,7 @@ export const uploadImageInGoogleDrive = async (
         body: fs.createReadStream(localFilePath)
       }
     })
+    // console.log("ch2");
 
     const fileId = response.data.id;
     if (!fileId || typeof fileId === "undefined") {
@@ -83,7 +88,7 @@ export const uploadImageInGoogleDrive = async (
         type: "anyone"
       }
     })
-    console.log();
+    // console.log("ch1");
     //NOTE - Delete file from Uploads folder after upload drive
     fs.unlinkSync(localFilePath);
 
@@ -94,6 +99,8 @@ export const uploadImageInGoogleDrive = async (
     if (await exists(localFilePath)) {
       fs.unlinkSync(localFilePath);
     }
+    // console.error(error);
+    
     throw new Error("Internal server Error")
   }
 }

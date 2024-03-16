@@ -15,6 +15,7 @@ export interface Quiz extends Document {
     Unlike?: number;
     createdAt?: Date;
     updatedAt?: Date;
+    isValid?:boolean
 }
 
 const QuizSchema = new mongoose.Schema<Quiz>({
@@ -71,7 +72,12 @@ const QuizSchema = new mongoose.Schema<Quiz>({
     Unlike: {
         type: Number,
         default: 0
+    },
+    isValid:{
+        type:Boolean,
+        default:false
     }
+
 },
 {
     timestamps: true

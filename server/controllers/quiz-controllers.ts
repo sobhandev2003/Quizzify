@@ -4,6 +4,8 @@ import asyncHandler from "express-async-handler"
 import { CustomRequest } from "../middiliwer/tokenValidator";
 import User from "../models/users-schema";
 import Quiz from "../models/quiz-schema";
+import { QuizQuestionModel } from "../models/question-schema";
+
 import { googleDrive, uploadImageInGoogleDrive } from "../services/uploadImageInDrive";
 import { Buffer } from "buffer";
 import { imageMimeTypes } from "../assets/imagefiletype";
@@ -71,6 +73,9 @@ export const createNewQuiz = asyncHandler(async (req: Request, res: Response) =>
         }
     )
 
+    await QuizQuestionModel.create(
+        { QuizId: newQuiz.id }
+    )
 
 
 
@@ -157,7 +162,7 @@ export const updateUnlike = asyncHandler(async (req: Request, res: Response) => 
     res.status(200).json({ success: true, message: "Unlike added." });
 });
 
-export const submitQuiz=asyncHandler(async(req:Request,res:Response)=>{
+export const submitQuiz = asyncHandler(async (req: Request, res: Response) => {
     const user = await User.findById((req as CustomRequest).user.id);
     const quizId = req.query.quizId;
     if (!user) {
@@ -169,5 +174,5 @@ export const submitQuiz=asyncHandler(async(req:Request,res:Response)=>{
         res.status(404);
         throw new Error("Quiz not found.");
     }
-    quiz.TotalNumberOfSubmit!+=1;
+    quiz.TotalNumberOfSubmit! += 1;
 })
