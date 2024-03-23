@@ -1,0 +1,61 @@
+.registration-from {
+    /* border: 1px solid red; */
+    display: flex;
+    flex-direction: column;
+    gap: 1.3rem;
+    width: 40vw;
+    align-items: center;
+    background-color: #ced6e0;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+    border-radius: .5rem;
+}
+
+.registration-from label {
+    position: relative;
+    margin: .5rem;
+    width: 70%;
+    height: fit-content;
+    border-radius: .5rem;
+    background: #2f3542;
+}
+
+.registration-from input {
+    padding: .8rem;
+    width: 90%;
+    outline: none;
+    border: none;
+    background: transparent;
+
+}
+
+.registration-from .placeholder {
+    position: absolute;
+    top: 20%;
+    left: 5%;
+    font-size: 1rem;
+}
+
+.registration-from input:focus+.placeholder,
+.registration-from input.dirty+.placeholder,
+.registration-from input:not(:placeholder-shown)+.placeholder {
+    top: -17px;
+    left: 5%;
+    color: #5352ed;
+    font-size: .8rem;
+    width: fit-content;
+    height: fit-content;
+}
+
+.registration-from .error {
+    color: red;
+    position: absolute;
+    top: 100%;
+    left: 5%;
+    font-size: .8rem;
+    width: fit-content;
+}
+
+.registration-from .register {
+    margin-top: 1.5rem;
+}
