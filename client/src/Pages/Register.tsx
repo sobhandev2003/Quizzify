@@ -4,8 +4,11 @@ import * as yup from 'yup';
 import { UserRegisterDetails } from "..";
 import { registerNewAccount } from "../services/userAcoount";
 import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "../redux/store";
+import { useEffect } from "react";
 function Register() {
   const navigate=useNavigate()
+  const LoginDetails = useAppSelector(state => state.userAccountReducer.loginUser);
   //NOTE - User schema 
   const userSchema = yup.object({
     UserName: yup.string().min(3).required(),
@@ -23,7 +26,12 @@ function Register() {
     }
   }
 
-
+  useEffect(() => {
+    console.log(LoginDetails);
+    if (LoginDetails.email.length>0) {
+      navigate("/")
+    }
+}, [LoginDetails])
   return (
     <div>
       <div>

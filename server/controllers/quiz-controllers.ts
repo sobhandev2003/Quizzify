@@ -6,7 +6,7 @@ import User from "../models/users-schema";
 import Quiz from "../models/quiz-schema";
 import { QuizQuestionModel } from "../models/question-schema";
 
-import { googleDrive, uploadImageInGoogleDrive } from "../services/uploadImageInDrive";
+import { googleDrive, uploadImageInGoogleDrive } from "../utils/uploadImageInDrive";
 import { Buffer } from "buffer";
 import { imageMimeTypes } from "../assets/imagefiletype";
 //SECTION -  - Create new Quiz

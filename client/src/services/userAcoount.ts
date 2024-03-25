@@ -55,8 +55,34 @@ export const loginExistingUser = async (loginData: LoginDetails, dispatch: any) 
     }
 }
 
+//SECTION - Logout current login user account
+
+export const logoutLoginUser=async(dispatch:any,navigate:any)=>{
+            try {
+                const response=await axios.get(`${import.meta.env.VITE_BASE_URL}/users/logout`,{
+                    withCredentials:true,  
+                })
+
+                if (response.data.success) {
+                    dispatch(updateLoginUser(response.data.userDetails))
+                    toast.success("log out")
+                    navigate("/login")
+                }
+
+            } catch (error) {
+                if (isAxiosError(error)) {
+                    toast.error(error.response?.data.message);
+                }
+                else {
+                    // Other error types
+                    console.error(error);
+                    toast.error("Something wrong.");
+                } 
+            }
+}
+
 //SECTION - Gate user details
-const getUserDetails = async (dispatch: any) => {
+export const getUserDetails = async (dispatch: any) => {
     try {
 
         const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/users/`, {
@@ -66,7 +92,7 @@ const getUserDetails = async (dispatch: any) => {
             // console.log(response.data);
             toast.success("Successfully login.")
 
-            dispatch(updateLoginUser(response.data.user))
+            dispatch(updateLoginUser(response.data.userDetails))
         }
     } catch (error) {
         if (isAxiosError(error)) {

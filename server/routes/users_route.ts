@@ -3,6 +3,7 @@ import {
     changeProfilePhoto,
     forgetPasswordRequest,
     getUserDetails,
+    logOutUser,
     loginUser,
     registerUser,
     resetPassword,
@@ -23,6 +24,7 @@ Route.route("/verify-email/:id/:token").get(verifyEmail);
 Route.route("/forgot-password").post(forgetPasswordRequest);
 Route.route("/reset-password").put(resetPassword);
 Route.route("/login").post(loginUser);
+Route.route("/logout").get(logOutUser);
 Route.route("/").get(validation,getUserDetails);
 Route.route("/profile-photo").post(validation,upload.single('photo'),changeProfilePhoto)
 export default Route;

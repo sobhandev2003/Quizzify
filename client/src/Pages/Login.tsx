@@ -27,8 +27,7 @@ const Login = () => {
   
   //NOTE - Login user 
   const loginAccount = (data: LoginDetails) => {
-    document.cookie = `email=${data.email}`
-    document.cookie = `password=${data.password}`
+   
     loginExistingUser(data, dispatch);
   }
 
@@ -50,7 +49,6 @@ const Login = () => {
       if (LoginDetails.email.length>0) {
         navigate("/")
       }
-
   }, [LoginDetails])
 
 

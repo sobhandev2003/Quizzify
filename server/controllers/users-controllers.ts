@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import User from "../models/users-schema";
+import User, { IUser } from "../models/users-schema";
 import bcrypt from "bcrypt"
 import fs from 'fs'
 import path from "path";
@@ -10,11 +10,11 @@ import {
     phoneNumberValidator,
     userNameValidator
 } from '../validator';
-import { senForgotPasswordLink, sendAccountVerificationEmail } from '../services/sendEmail';
+import { senForgotPasswordLink, sendAccountVerificationEmail } from '../utils/sendEmail';
 import randomBytes from "randombytes";
 import jwt from "jsonwebtoken";
 import { CustomRequest } from '../middiliwer/tokenValidator';
-import { uploadImageInGoogleDrive } from '../services/uploadImageInDrive';
+import { uploadImageInGoogleDrive } from '../utils/uploadImageInDrive';
 import { imageMimeTypes } from '../assets/imagefiletype';
 
 
@@ -52,7 +52,11 @@ export const registerUser = async (req: Request, res: Response, next: NextFuncti
         const user = await User.create({
             UserName, Email, phoneNumber, Password: hashPassword, VerificationToken
         });
-        await sendAccountVerificationEmail(user.id, user.VerificationToken, user.Email);
+
+        // if (!user.VerificationToken) {
+        //     user.VerificationToken=
+        // }
+        await sendAccountVerificationEmail(user.id, user.VerificationToken!, user.Email!);
 
         res.json({ success: true, message: "Successfully Register account" })
 
@@ -173,7 +177,7 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
         }
 
         emailValidator(email);
-        const user = await User.findOne({ Email: email });
+        const user: IUser | null = await User.findOne({ Email: email });
         if (!user) {
             res.status(404);
             throw new Error("User not found")
@@ -202,15 +206,14 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
                     expiresIn: "10d"
                 }
             );
-            
-                res.cookie("authToken",authorizationToken,{
-                    expires:new Date(Date.now()+10 * 24 * 60 * 60 * 1000),
-                    httpOnly:true,
-                    sameSite:'none',
-                    secure:true
-                    
-                })
-            
+
+            res.cookie("authToken", authorizationToken, {
+                expires: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
+                httpOnly: true,
+                sameSite: 'none',
+                secure:true
+            })
+
             res.status(200).json({ Success: true });
         }
         else {
@@ -223,13 +226,41 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
 
 }
 
+//SECTION - Logout user
+ export const logOutUser =async(req:Request,res:Response)=>{  
+     res.clearCookie('authToken',{
+        path:'/',
+        sameSite:"none",
+        httpOnly:true,
+        secure:true
+    })
+    const userDetails = {
+        id:"",
+        email:"",
+        phoneNumber:"",
+        ProfilePhotoId:""
+    }
+    res.status(200).json({success:true,userDetails})
+ }
+
 //SECTION -  Get login user details
-export const getUserDetails = (req: Request, res: Response, next: NextFunction) => {
+export const getUserDetails = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const user = (req as CustomRequest).user;
         const tokenExpireTime = (req as CustomRequest).expireTime;
+        const fulUserDetails:IUser|null = await User.findById(user.id);
+        if (!fulUserDetails) {
+            res.status(404)
+            throw new Error("Not found")
+        }
+        const userDetails = {
+            id:fulUserDetails.id||"",
+            email: fulUserDetails.Email||"",
+            phoneNumber: fulUserDetails.phoneNumber||"",
+            ProfilePhotoId: fulUserDetails.ProfilePhotoId||""
 
-        res.json({ success: true, user, tokenExpireTime })
+        }
+        res.json({ success: true, userDetails, tokenExpireTime })
 
     } catch (error) {
         next(error)
@@ -238,7 +269,6 @@ export const getUserDetails = (req: Request, res: Response, next: NextFunction) 
 
 //SECTION - Change and upload profile photo
 export const changeProfilePhoto = async (req: Request, res: Response, next: NextFunction) => {
-
     try {
         const file = req.file!
         if (!file) {

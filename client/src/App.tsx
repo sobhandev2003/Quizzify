@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-
+import Cookies from 'js-cookie';
 import './App.css'
 import { Route, Routes } from 'react-router-dom'
 import EmailVerification from './Pages/EmailVerification'
@@ -9,10 +9,17 @@ import Register from './Pages/Register'
 import Navbar from './components/Navbar'
 import Login from './Pages/Login'
 import Home from './Pages/Home'
+import { getUserDetails } from './services/userAcoount';
+import { useDispatch } from 'react-redux';
+
 // import logo from 'https://drive.google.com/file/d/1FG18bt3PW3F14iI6pMaYfvqv-2u-1Y9B/view'
 function App() {
+const dispatch=useDispatch()
+  useEffect(() => {
+    getUserDetails(dispatch)
+  }, []);
 
-  
+
   
   return (
     <>

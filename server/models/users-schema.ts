@@ -1,5 +1,31 @@
-import mongoose from "mongoose";
+import mongoose, { Document, Schema } from "mongoose";
 import { emailValidator, phoneNumberValidator } from "../validator";
+
+//!SECTION
+interface IAttendQuizDetails {
+    // Define properties of AttendQuizDetails
+    // Example:
+    quizId: string;
+    score: number;
+    // Add more properties as per your requirements
+}
+
+export interface IUser extends Document {
+    UserName: string;
+    Email: string;
+    phoneNumber: string;
+    ProfilePhotoId: string | null;
+    Password: string;
+    VerificationToken: string | null;
+    IsVerified: boolean;
+    TotalAttendNumberOfQuiz: number;
+    AttendQuiz: IAttendQuizDetails[];
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+//!SECTION
+
 
 const AttendQuizDetails=new mongoose.Schema({
     Quiz_ID:{
@@ -31,6 +57,7 @@ const usersSchema=new mongoose.Schema({
         required:[true,"User Name mandatory "]
     },
     Email:{
+
         type:String,
             validate:{
                 validator:emailValidator,
