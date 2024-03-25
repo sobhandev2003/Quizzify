@@ -1,7 +1,12 @@
 import { Formik } from "formik";
 import "../css/Registration.css";
 import * as yup from 'yup';
+import { UserRegisterDetails } from "..";
+import { registerNewAccount } from "../services/userAcoount";
+import { useNavigate } from "react-router-dom";
 function Register() {
+  const navigate=useNavigate()
+  //NOTE - User schema 
   const userSchema = yup.object({
     UserName: yup.string().min(3).required(),
     Email: yup.string().email().required(),
@@ -11,11 +16,12 @@ function Register() {
       'Password must contain one uppercase , one lowercase , one number, and one special character'
     ).required().min(6)
   })
- const registerUser=(values:string)=>{
-  
-  console.log(values);
-  
- }
+  const registerUser = async(data:UserRegisterDetails) => {
+    
+    if (await registerNewAccount(data)) {
+      navigate("/login")
+    }
+  }
 
 
   return (
@@ -25,7 +31,7 @@ function Register() {
         <Formik
           initialValues={{ UserName: "", Email: "", phoneNumber: "", Password: "" }}
           validationSchema={userSchema}
-        onSubmit={(value)=>registerUser(value.Password)}
+          onSubmit={(value) => registerUser(value)}
         >
           {({
             values,
@@ -33,7 +39,7 @@ function Register() {
             touched,
             handleChange,
             handleSubmit,
-            
+
             /* and other goodies */
           }) => (
             <form className='registration-from' onSubmit={handleSubmit}>
@@ -45,7 +51,7 @@ function Register() {
                   value={values.UserName}
                   required />
                 <span className="placeholder">User Name</span>
-                {errors.UserName&&touched.UserName && <span className="error">{errors.UserName}</span>}
+                {errors.UserName && touched.UserName && <span className="error">{errors.UserName}</span>}
               </label>
 
               <label>
@@ -57,7 +63,7 @@ function Register() {
                   value={values.Email}
                   required />
                 <span className="placeholder">Email</span>
-                {errors.Email&&touched.Email && <span className="error">{errors.Email}</span>}
+                {errors.Email && touched.Email && <span className="error">{errors.Email}</span>}
               </label>
 
               <label>
@@ -68,7 +74,7 @@ function Register() {
                   value={values.phoneNumber}
                   required />
                 <span className="placeholder">Phone Number</span>
-                {errors.phoneNumber&&touched.phoneNumber && <span className="error">{errors.phoneNumber}</span>}
+                {errors.phoneNumber && touched.phoneNumber && <span className="error">{errors.phoneNumber}</span>}
               </label>
 
               <label>
@@ -79,7 +85,7 @@ function Register() {
                   value={values.Password}
                   required />
                 <span className="placeholder">Password</span>
-                {errors.Password&&touched.Password && <span className="error">{errors.Password}</span>}
+                {errors.Password && touched.Password && <span className="error">{errors.Password}</span>}
               </label>
               <button type="submit" className="register">Register</button>
             </form>

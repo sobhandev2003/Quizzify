@@ -1,9 +1,28 @@
 import mongoose from "mongoose";
 import { emailValidator, phoneNumberValidator } from "../validator";
-//TODO - 
-const AttendQuizDetails=new mongoose.Schema({
 
+const AttendQuizDetails=new mongoose.Schema({
+    Quiz_ID:{
+        type:mongoose.Schema.Types.ObjectId,
+        required:[true,"Quiz id mandatory."]
+    },
+    Score:{
+            type:Number,
+            required:[true,"Score mandatory."]
+
+    },
+    NumberOfAttend:{
+        type:Number,
+        default:0
+    },
+    isPassed:{
+        type:Boolean,
+        required:[true,"Passing status mandatory."]
+    }
+},{
+    timestamps:true
 })
+
 
 const usersSchema=new mongoose.Schema({
     UserName:{
@@ -57,5 +76,6 @@ const usersSchema=new mongoose.Schema({
 },
 {timestamps:true}
 )
+
 
 export default mongoose.model("User",usersSchema);

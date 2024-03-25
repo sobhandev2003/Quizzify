@@ -17,31 +17,11 @@ export interface PayloadInterface {
         email: String
     },
     expireTime: Number,
-    // iat: 1709816110,
-    // exp: 1710680110
+   
 }
 export const validation = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const authorizationToken = req.headers.authorization || req.headers.Authorization;
-        
-        
-        if ( authorizationToken === undefined) {
-             res.status(401)
-            throw new Error("Authorization token is missing")
-        }
-
-        if (!authorizationToken.includes("Bearer")) {
-            res.status(401)
-            throw new Error("Authorization token not valid")
-        }
-
-        if (Array.isArray(authorizationToken)) {
-            res.status(401)
-            throw new Error("Authorization token not valid")
-        }
-
-        const token = authorizationToken.split(" ")[1];
-
+        const token:string=req.cookies.authToken||""
         jwt.verify(token, process.env.JWT_SECRET!, (err, decode) => {
             if (err) {
                 res.status(401);

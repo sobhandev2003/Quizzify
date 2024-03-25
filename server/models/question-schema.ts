@@ -4,6 +4,7 @@ import quizSchema from "./quiz-schema";
 export interface QuestionInterface extends Document {
     QuestionNumber: number;
     Question: string;
+    Description:String;
     Option: string[];
     CorrectOption: string;
     Marks: number;
@@ -25,6 +26,10 @@ const QuestionSchema: Schema = new Schema({
     Question: {
         type: String,
         required: [true, "Quest required."]
+    },
+    Description:{
+        type: String,
+        default:null
     },
     Option: {
         type: [String],

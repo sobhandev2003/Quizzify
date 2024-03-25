@@ -25,7 +25,7 @@ function EmailTemplate(activationLink: String, activeTime: String,message:String
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             display: flex;
-            flex-direction: column;
+            flex-direction:column;
             align-items: center;
             justify-self: center;
         }
@@ -79,7 +79,9 @@ function EmailTemplate(activationLink: String, activeTime: String,message:String
 
         <img src="https://drive.google.com/thumbnail?id=1Sx55Q0riatzqgISY51ZCbrsGcT4Zlmk3" alt="Logo"
             class="logo"></img>
+           
         <h1>Welcome to Quizzify.</h1>
+
         <p>To ${message}, please click the following link:</p>
         <button><a href="${activationLink}" target="_blank" class="activation-link">Verify</a></button>
         <p class="activate_time">This link will be active until ${activeTime}.</p>

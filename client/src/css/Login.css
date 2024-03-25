@@ -1,0 +1,17 @@
+.login{
+    display: flex;
+    align-items: center;
+   
+}
+.login-div{
+    width: 35vw;
+    /* border: 1px solid red; */
+    margin: .5rem;
+
+}
+.login-from{
+    /* border: 1px solid rgb(54, 150, 182); */
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}

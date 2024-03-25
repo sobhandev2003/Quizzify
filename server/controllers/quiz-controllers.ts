@@ -17,6 +17,7 @@ export const createNewQuiz = asyncHandler(async (req: Request, res: Response) =>
         Topic,
         NumberOfQuestion,
         TotalScore,
+        PassingScore,
         NumberOfAttendByAnyone } = req.body;
     //NOTE - set poster file details if its exits 
     const file = req.file;
@@ -69,6 +70,7 @@ export const createNewQuiz = asyncHandler(async (req: Request, res: Response) =>
             Topic,
             NumberOfQuestion,
             TotalScore,
+            PassingScore,
             NumberOfAttendByAnyone
         }
     )

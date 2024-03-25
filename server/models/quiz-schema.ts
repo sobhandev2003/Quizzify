@@ -8,6 +8,7 @@ export interface Quiz extends Document {
     Topic?: string;
     NumberOfQuestion: number;
     TotalScore: number;
+    PassingScore?:number;
     NumberOfAttendByAnyone?: number;
     PosterId?: string | null;
     TotalNumberOfSubmit?: number;
@@ -50,6 +51,10 @@ const QuizSchema = new mongoose.Schema<Quiz>({
         type: Number,
         min: 5,
         required: [true, "Total Score in Quiz required."]
+    },
+    PassingScore:{
+                type:Number,
+                default:0
     },
     NumberOfAttendByAnyone: {
         type: Number,

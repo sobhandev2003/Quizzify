@@ -202,8 +202,16 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
                     expiresIn: "10d"
                 }
             );
-
-            res.status(200).json({ Success: true, authorizationToken });
+            
+                res.cookie("authToken",authorizationToken,{
+                    expires:new Date(Date.now()+10 * 24 * 60 * 60 * 1000),
+                    httpOnly:true,
+                    sameSite:'none',
+                    secure:true
+                    
+                })
+            
+            res.status(200).json({ Success: true });
         }
         else {
             res.status(401);

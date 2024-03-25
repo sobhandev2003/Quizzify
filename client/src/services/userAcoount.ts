@@ -1,0 +1,81 @@
+
+
+
+import axios, { isAxiosError } from "axios";
+import { LoginDetails, UserRegisterDetails } from "..";
+import toast from 'react-hot-toast';
+import { updateLoginUser } from "../redux/reducer/userAccount";
+
+
+//SECTION - Register new user account
+export const registerNewAccount = async (userData: UserRegisterDetails) => {
+    try {
+        const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/`, userData);
+        const data = await response.data
+        toast.success(data.message)
+            return data.success
+    } catch (error) {
+        if (isAxiosError(error)) {
+            // Axios error
+            toast.error(error.response?.data.message);
+            return false;
+        } else {
+            // Other error types
+            console.error(error);
+            toast.error("Something wrong.");
+            return false;
+        }
+    }
+}
+
+//SECTION - Login Existing User
+export const loginExistingUser = async (loginData: LoginDetails, dispatch: any) => {
+
+    try {
+        const response = await axios.post(
+            `${import.meta.env.VITE_BASE_URL}/users/login`,
+            loginData,
+            {
+                withCredentials: true
+            })
+
+        if (response.data) {
+            getUserDetails(dispatch)
+        }
+
+    } catch (error) {
+        if (isAxiosError(error)) {
+            toast.error(error.response?.data.message);
+        }
+        else {
+            // Other error types
+            console.error(error);
+            toast.error("Something wrong.");
+        }
+    }
+}
+
+//SECTION - Gate user details
+const getUserDetails = async (dispatch: any) => {
+    try {
+
+        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/users/`, {
+            withCredentials: true
+        })
+        if (response.data.success) {
+            // console.log(response.data);
+            toast.success("Successfully login.")
+
+            dispatch(updateLoginUser(response.data.user))
+        }
+    } catch (error) {
+        if (isAxiosError(error)) {
+            toast.error(error.response?.data.message);
+        }
+        else {
+            // Other error types
+            console.error(error);
+            toast.error("Something wrong.");
+        }
+    }
+}
