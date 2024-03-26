@@ -13,7 +13,7 @@ export const registerNewAccount = async (userData: UserRegisterDetails) => {
         const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/users/`, userData);
         const data = await response.data
         toast.success(data.message)
-            return data.success
+        return data.success
     } catch (error) {
         if (isAxiosError(error)) {
             // Axios error
@@ -41,6 +41,8 @@ export const loginExistingUser = async (loginData: LoginDetails, dispatch: any) 
 
         if (response.data) {
             getUserDetails(dispatch)
+            toast.success("Successfully login.")
+
         }
 
     } catch (error) {
@@ -57,28 +59,28 @@ export const loginExistingUser = async (loginData: LoginDetails, dispatch: any) 
 
 //SECTION - Logout current login user account
 
-export const logoutLoginUser=async(dispatch:any,navigate:any)=>{
-            try {
-                const response=await axios.get(`${import.meta.env.VITE_BASE_URL}/users/logout`,{
-                    withCredentials:true,  
-                })
+export const logoutLoginUser = async (dispatch: any, navigate: any) => {
+    try {
+        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/users/logout`, {
+            withCredentials: true,
+        })
 
-                if (response.data.success) {
-                    dispatch(updateLoginUser(response.data.userDetails))
-                    toast.success("log out")
-                    navigate("/login")
-                }
+        if (response.data.success) {
+            dispatch(updateLoginUser(response.data.userDetails))
+            toast.success("log out")
+            navigate("/login")
+        }
 
-            } catch (error) {
-                if (isAxiosError(error)) {
-                    toast.error(error.response?.data.message);
-                }
-                else {
-                    // Other error types
-                    console.error(error);
-                    toast.error("Something wrong.");
-                } 
-            }
+    } catch (error) {
+        if (isAxiosError(error)) {
+            toast.error(error.response?.data.message);
+        }
+        else {
+            // Other error types
+            console.error(error);
+            toast.error("Something wrong.");
+        }
+    }
 }
 
 //SECTION - Gate user details
@@ -90,10 +92,46 @@ export const getUserDetails = async (dispatch: any) => {
         })
         if (response.data.success) {
             // console.log(response.data);
-            toast.success("Successfully login.")
 
             dispatch(updateLoginUser(response.data.userDetails))
         }
+    } catch (error) {
+        if (isAxiosError(error)) {
+            toast.error(error.response?.data.message);
+        }
+        else {
+            // Other error types
+            console.error(error);
+            toast.error("Something wrong.");
+        }
+    }
+}
+
+
+export const updateProfilePhoto = async (photo: File, dispatch: any) => {
+    try {
+
+        const formData = new FormData()
+        formData.append('photo', photo)
+
+        const response = await axios.post(
+            `${import.meta.env.VITE_BASE_URL}/users/profile-photo`,
+            formData,
+            {
+                withCredentials: true, // include cookies
+            }
+        );
+
+        const data = response.data
+        
+        if (data.success) {
+            toast.success("Successfully update profile photo")
+            getUserDetails(dispatch)
+        }
+        else {
+            toast.error(data.message)
+        }
+
     } catch (error) {
         if (isAxiosError(error)) {
             toast.error(error.response?.data.message);

@@ -11,7 +11,9 @@ import Login from './Pages/Login'
 import Home from './Pages/Home'
 import { getUserDetails } from './services/userAcoount';
 import { useDispatch } from 'react-redux';
+import Profile from './Pages/Profile';
 
+export const drivePhotoBaseUrl="https://drive.google.com/thumbnail?id="
 // import logo from 'https://drive.google.com/file/d/1FG18bt3PW3F14iI6pMaYfvqv-2u-1Y9B/view'
 function App() {
 const dispatch=useDispatch()
@@ -33,6 +35,7 @@ const dispatch=useDispatch()
       <Route  path='/forget-password' element={<ForgotPassword/>}/>
       <Route path='/register' element={<Register/>}/>
       <Route path='/login' element={<Login/>}/>
+      <Route path='/:user-name' element={<Profile/>}/>
     </Routes>
     </>
   )

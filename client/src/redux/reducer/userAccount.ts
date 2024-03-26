@@ -1,21 +1,25 @@
 
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
-export interface USerDetails{
+export interface UserDetails{
     id:string;
     email:string;
-    userName:string
+    userName:string;
+    phoneNumber:string
+    profilePhotoId:string;
 }
 
 export interface userAccountState{
-    loginUser:USerDetails
+    loginUser:UserDetails
 }
 
 const initialState:userAccountState={
         loginUser:{
             id:"",
             email:"",
-            userName:""
+            userName:"",
+            phoneNumber:"",
+            profilePhotoId:""
         }
 }
 
@@ -24,6 +28,8 @@ export const userAccountSlice=createSlice({
     initialState,
     reducers:{
         updateLoginUser:(state,action)=>{
+            // console.log(action.payload);
+            
             state.loginUser=action.payload
         }
     }

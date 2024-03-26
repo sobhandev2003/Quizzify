@@ -255,9 +255,10 @@ export const getUserDetails = async (req: Request, res: Response, next: NextFunc
         }
         const userDetails = {
             id:fulUserDetails.id||"",
+            userName:fulUserDetails.UserName||"",
             email: fulUserDetails.Email||"",
             phoneNumber: fulUserDetails.phoneNumber||"",
-            ProfilePhotoId: fulUserDetails.ProfilePhotoId||""
+            profilePhotoId: fulUserDetails.ProfilePhotoId||""
 
         }
         res.json({ success: true, userDetails, tokenExpireTime })
@@ -271,6 +272,7 @@ export const getUserDetails = async (req: Request, res: Response, next: NextFunc
 export const changeProfilePhoto = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const file = req.file!
+        // console.log(file);
         if (!file) {
             res.status(400);
             throw new Error("File is missing.")

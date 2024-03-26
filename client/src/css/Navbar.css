@@ -1,19 +1,122 @@
-.navbar{
+.navbar {
     height: 70px;
     width: 100vw;
     /* position: fixed;
     top: 0; */
     position: sticky;
     top: 0;
-    background: red;
+    background: #f5f6fa;
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: center;
+
+}
+
+.before-login {
+    border: 1px solid;
+    margin-right: 1rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.after-login {
+    border: 1px solid orange;
+    width: 95%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo-div {
+    height: 100%;
+    width: 10%;
+    /* border: 1px solid red; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-div a {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.logo {
+    width: 80%;
+    height: 80%;
+    /* border: 1px solid red; */
+    /* justify-self: center; */
+}
+
+.route-div {
+    border: 1px solid red;
+    width: 50%;
+    height: 100%;
+}
+
+.profile-details {
+    border: 1px solid red;
+    width: 8%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.profile-photo {
+    height: 4rem;
+    width: 4rem;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+.profile-details .details-section {
+    border: 1px solid rgb(60, 234, 21);
+    position: absolute;
+    top: 110%;
+    right: 50%;
+    width: 20rem;
+    height: 25rem;
+    transition: 2s ease-in-out;
+
+}
+
+.user-photo {
+    width: 25%;
+    height: 4rem;
+    width: 4rem;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+.user-basic-details {
+    padding-left: 8px;
+    border: 1px solid red;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    text-decoration: none;
+}
+
+.user-basic-details div {
+    /* border: 1px solid red; */
     
 }
-.before-login{
-    border: 1px solid;
-   margin-right: 1rem;
-   display: flex;
-   gap: 1rem;
+
+.user-basic-details div h3 {
+    color: #1B1464;
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+}
+
+.user-basic-details div h4 {
+    color: #F79F1F;
+    font-size: 1rem;
+    letter-spacing: .5px;
 }
