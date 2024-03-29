@@ -23,6 +23,9 @@ function Navbar() {
   )
   const LoginDetails = useAppSelector(state => state.userAccountReducer.loginUser);
 
+//NOTE - 
+
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const logOutAccount = () => {
@@ -73,7 +76,6 @@ function Navbar() {
                       <h4>{userDetails.email}</h4>
                       </div>
                       </NavLink>
-
                       <button onClick={logOutAccount}>Log out</button>
 
                     </div>

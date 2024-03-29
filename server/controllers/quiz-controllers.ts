@@ -19,6 +19,8 @@ export const createNewQuiz = asyncHandler(async (req: Request, res: Response) =>
         TotalScore,
         PassingScore,
         NumberOfAttendByAnyone } = req.body;
+        console.log(req.body);
+        
     //NOTE - set poster file details if its exits 
     const file = req.file;
     let filePath: string | null = null;
@@ -39,13 +41,14 @@ export const createNewQuiz = asyncHandler(async (req: Request, res: Response) =>
         }
         throw new Error("Input not valid");
     }
-    if (NumberOfQuestion < 5) {
+
+    if (Number(NumberOfQuestion) < 5) {
         res.status(400);
         if (filePath) {
         }
         throw new Error("Number of question must geterr than 4.");
     }
-    if (TotalScore < 5) {
+    if (Number(TotalScore) < 5) {
         res.status(400);
         if (filePath) {
         }
@@ -68,10 +71,10 @@ export const createNewQuiz = asyncHandler(async (req: Request, res: Response) =>
             Description,
             Category,
             Topic,
-            NumberOfQuestion,
-            TotalScore,
+            NumberOfQuestion:Number(NumberOfQuestion) ,
+            TotalScore:Number(TotalScore),
             PassingScore,
-            NumberOfAttendByAnyone
+            NumberOfAttendByAnyone:Number(NumberOfAttendByAnyone)
         }
     )
 
