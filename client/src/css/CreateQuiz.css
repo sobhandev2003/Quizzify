@@ -1,3 +1,13 @@
 .create-quiz{
     
 }
+.quiz-create-form{
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center; 
+}
+.quiz-create-form label{
+    display: flex;
+    flex-direction: row-reverse;
+}

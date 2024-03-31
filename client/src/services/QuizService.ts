@@ -34,13 +34,16 @@ export const createQuiz=async(quizDetaisl:Quiz)=>{
             )
 
         console.log(response.data);
+        if (response.data.success) {
+            toast.success(response.data.message)
+           
+        }
         
 
     } catch (error) {
         if(isAxiosError(error)){
-            console.log(error);
-            
-            toast.error(error.message)
+            // console.log(error);
+            toast.error(error.response?.data.message)
         }
         else{
             console.error(error);

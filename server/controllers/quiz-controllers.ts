@@ -19,7 +19,7 @@ export const createNewQuiz = asyncHandler(async (req: Request, res: Response) =>
         TotalScore,
         PassingScore,
         NumberOfAttendByAnyone } = req.body;
-        console.log(req.body);
+        // console.log(req.body);
         
     //NOTE - set poster file details if its exits 
     const file = req.file;

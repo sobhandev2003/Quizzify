@@ -25,7 +25,9 @@ function Profile() {
   const handelUpdateProfilePhoto = (e:React.FormEvent) => {
     e.preventDefault()
     if (photo) {
-      updateProfilePhoto(photo, dispatch)
+      // updateProfilePhoto(photo, dispatch)
+      console.log(photo);
+      
     }
     else{
       toast.error("Photo is missing")      

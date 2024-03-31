@@ -12,6 +12,7 @@ import Home from './Pages/Home'
 import { getUserDetails } from './services/userAcoount';
 import { useDispatch } from 'react-redux';
 import Profile from './Pages/Profile';
+import CreateQuiz from './components/CreateQuiz';
 
 export const drivePhotoBaseUrl="https://drive.google.com/thumbnail?id="
 // import logo from 'https://drive.google.com/file/d/1FG18bt3PW3F14iI6pMaYfvqv-2u-1Y9B/view'
@@ -36,6 +37,7 @@ const dispatch=useDispatch()
       <Route path='/register' element={<Register/>}/>
       <Route path='/login' element={<Login/>}/>
       <Route path='/:user-name' element={<Profile/>}/>
+      <Route path='/create-quiz' element={<CreateQuiz/>}/>
     </Routes>
     </>
   )
