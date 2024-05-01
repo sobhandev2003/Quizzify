@@ -34,8 +34,7 @@ function Register() {
 }, [LoginDetails])
   return (
     <div>
-      <div>
-        <h1 className="ml-5 text-2xl text-blue-500">Register user account</h1>
+      <div className="mt-5">
         <Formik
           initialValues={{ UserName: "", Email: "", phoneNumber: "", Password: "" }}
           validationSchema={userSchema}
@@ -51,6 +50,7 @@ function Register() {
             /* and other goodies */
           }) => (
             <form className='registration-from' onSubmit={handleSubmit}>
+              <h1 className="ml-5 text-2xl text-black">Register user</h1>
               <label>
                 <input type="text"
                   name="UserName"
@@ -95,7 +95,7 @@ function Register() {
                 <span className="placeholder">Password</span>
                 {errors.Password && touched.Password && <span className="error">{errors.Password}</span>}
               </label>
-              <button type="submit" className="register">Register</button>
+              <button type="submit" className="register px-4 rounded-md">Register</button>
             </form>
 
           )}
