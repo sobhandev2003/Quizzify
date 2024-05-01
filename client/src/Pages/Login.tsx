@@ -54,6 +54,7 @@ const Login = () => {
 
   return (
     <div className='login-div'>
+      <h2 className='text-2xl text-center mb-6 text-red-600'>Log In</h2>
       <form onSubmit={formik.handleSubmit} className='login-from'>
         <TextField
           fullWidth
@@ -78,8 +79,8 @@ const Login = () => {
           error={formik.touched.password && Boolean(formik.errors.password)}
           helperText={formik.touched.password && formik.errors.password}
         />
-        <Button color="primary" variant="contained" fullWidth type="submit">
-          Submit
+        <Button color="primary" variant="contained" className='p-10 w-15 mt-10' type="submit">
+          Log In
         </Button>
       </form>
     </div>

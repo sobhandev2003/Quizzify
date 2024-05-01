@@ -1,14 +1,16 @@
 .registration-from {
-    /* border: 1px solid red; */
-    display: flex;
+    /*border: 1px solid red;
+    */display: flex;
     flex-direction: column;
     gap: 1.3rem;
     width: 40vw;
     align-items: center;
-    background-color: #ced6e0;
+    background-color: #becddf;
     padding-top: 3rem;
+    margin-left: 30vw;
     padding-bottom: 3rem;
     border-radius: .5rem;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 .registration-from label {
@@ -17,16 +19,16 @@
     width: 70%;
     height: fit-content;
     border-radius: .5rem;
-    background: #2f3542;
+    background: #9399a7;
 }
 
 .registration-from input {
-    padding: .8rem;
+    padding: 0.8rem;
     width: 90%;
     outline: none;
     border: none;
     background: transparent;
-
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 .registration-from .placeholder {
@@ -57,5 +59,13 @@
 }
 
 .registration-from .register {
-    margin-top: 1.5rem;
+    margin-top: 2rem;
+    font-size: 2vw;
+    font-weight: 500;
+    background: linear-gradient(#1095c1 0 0) var(--p, 0) / var(--p, 0) no-repeat;
+    transition: .4s, background-position 0s;
+}
+.registration-from .register:hover{
+    --p: 100%;
+    color: #000;
 }

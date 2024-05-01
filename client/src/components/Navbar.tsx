@@ -77,7 +77,6 @@ function Navbar() {
                       </div>
                       </NavLink>
                       <button onClick={logOutAccount}>Log out</button>
-
                     </div>
                   }
                 </div>

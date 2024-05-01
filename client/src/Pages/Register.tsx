@@ -35,7 +35,7 @@ function Register() {
   return (
     <div>
       <div>
-        <h1>Register user account</h1>
+        <h1 className="ml-5 text-2xl text-blue-500">Register user account</h1>
         <Formik
           initialValues={{ UserName: "", Email: "", phoneNumber: "", Password: "" }}
           validationSchema={userSchema}
