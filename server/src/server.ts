@@ -27,3 +27,5 @@ const Port=process.env.PORT || 5000
 App.listen(Port, () => {
     console.log(`App is running http://127.0.0.1:${Port}`);
 })
+
+export default App

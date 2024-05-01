@@ -4,8 +4,11 @@
   "description": "",
   "main": "server.ts",
   "scripts": {
-    "start": "node server.ts",
-    "dev": "nodemon server.ts",
+    "start": "node src/server.ts",
+    "dev": "nodemon src/server.ts",
+  "build": "rimraf dist && tsc",
+  "ts.check": "tsc --project tsconfig.json",
+  "add-build": "git add dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -43,5 +46,10 @@
     "nodemailer": "^6.9.11",
     "randombytes": "^2.1.0",
     "sharp": "^0.33.2"
-  }
+  },
+  "pre-commit": [
+    "ts.check",
+    "build",
+    "add-build"
+]
 }
