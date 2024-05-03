@@ -25,8 +25,8 @@ function Profile() {
   const handelUpdateProfilePhoto = (e:React.FormEvent) => {
     e.preventDefault()
     if (photo) {
-      // updateProfilePhoto(photo, dispatch)
-      console.log(photo);
+      updateProfilePhoto(photo, dispatch)
+      // console.log(photo);
       
     }
     else{
@@ -56,6 +56,7 @@ const profilePhotoChangeFrom=(
       setUserDetails(LoginDetails);
     }
   },[LoginDetails])
+  
 
   return (
     <div>

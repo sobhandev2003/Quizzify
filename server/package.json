@@ -4,11 +4,8 @@
   "description": "",
   "main": "server.ts",
   "scripts": {
-    "start": "node src/server.ts",
-    "dev": "nodemon src/server.ts",
-  "build": "rimraf dist && tsc",
-  "ts.check": "tsc --project tsconfig.json",
-  "add-build": "git add dist",
+    "start": "node server.ts",
+    "dev": "nodemon server.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -41,7 +38,7 @@
     "googleapis": "^133.0.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.2.0",
-    "multer": "^1.4.5-lts.1",
+    "multer": "^1.4.4",
     "multer-gridfs-storage": "^5.0.2",
     "nodemailer": "^6.9.11",
     "randombytes": "^2.1.0",
@@ -51,5 +48,5 @@
     "ts.check",
     "build",
     "add-build"
-]
+  ]
 }

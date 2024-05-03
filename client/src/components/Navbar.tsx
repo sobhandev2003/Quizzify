@@ -23,7 +23,7 @@ function Navbar() {
   )
   const LoginDetails = useAppSelector(state => state.userAccountReducer.loginUser);
 
-//NOTE - 
+  //NOTE - 
 
 
   const dispatch = useDispatch();
@@ -63,6 +63,9 @@ function Navbar() {
             </div>
             {!isMobile ? (
               <>
+              <div>
+                <NavLink to="/create-quiz">Create Quiz</NavLink>
+              </div>
                 <div className="profile-details">
                   <img src={`${drivePhotoBaseUrl}${profilePhotoId}`} alt="profile photo" className="profile-photo" onClick={() => setIsProfileDetails(!isProfileDetails)} />
 
@@ -70,11 +73,11 @@ function Navbar() {
                     isProfileDetails &&
                     <div className="details-section">
                       <NavLink to={`/${userDetails.userName}`} className="user-basic-details">
-                      <img src={`${drivePhotoBaseUrl}${profilePhotoId}`} alt="profile photo" className="user-photo"/>
-                      <div>
-                      <h3>{userDetails.userName}</h3>
-                      <h4>{userDetails.email}</h4>
-                      </div>
+                        <img src={`${drivePhotoBaseUrl}${profilePhotoId}`} alt="profile photo" className="user-photo" />
+                        <div>
+                          <h3>{userDetails.userName}</h3>
+                          <h4>{userDetails.email}</h4>
+                        </div>
                       </NavLink>
                       <button onClick={logOutAccount}>Log out</button>
                     </div>

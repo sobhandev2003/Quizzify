@@ -25,3 +25,23 @@ export interface Quiz{
     PassingScore?:string;
     poster?:File|null;
 }
+
+export interface Quiz  {
+    _id:string,
+    User_Id: string;
+    Name: string;
+    Description: string;
+    Category: string;
+    Topic?: string;
+    NumberOfQuestion: number;
+    TotalScore: number;
+    PassingScore?:number;
+    NumberOfAttendByAnyone?: number;
+    PosterId?: string | null;
+    TotalNumberOfSubmit?: number;
+    Like?: number;
+    Unlike?: number;
+    createdAt?: Date;
+    updatedAt?: Date;
+    isValid?:boolean
+}

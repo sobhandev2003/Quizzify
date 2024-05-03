@@ -47,6 +47,8 @@ export const loginExistingUser = async (loginData: LoginDetails, dispatch: any) 
 
     } catch (error) {
         if (isAxiosError(error)) {
+            console.log(error);
+            
             toast.error(error.response?.data.message);
         }
         else {
@@ -113,7 +115,8 @@ export const updateProfilePhoto = async (photo: File, dispatch: any) => {
 
         const formData = new FormData()
         formData.append('photo', photo)
-
+            console.log( `${import.meta.env.VITE_BASE_URL}/users/profile-photo`);
+            
         const response = await axios.post(
             `${import.meta.env.VITE_BASE_URL}/users/profile-photo`,
             formData,
@@ -121,7 +124,8 @@ export const updateProfilePhoto = async (photo: File, dispatch: any) => {
                 withCredentials: true, // include cookies
             }
         );
-
+        console.log(response);
+        
         const data = response.data
         
         if (data.success) {
