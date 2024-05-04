@@ -53,7 +53,6 @@ const handelNavigate=(quiz:Quiz,index:number):void=>{
                   like={quiz.Like}
                   unlike={quiz.Unlike}
                 />
-                {quiz.User_Id === loginDetails.id && <><MdEditSquare className='edit-btn' /></>}
               </div>
             ))
           }
