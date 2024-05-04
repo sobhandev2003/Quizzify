@@ -1,4 +1,4 @@
-import * as React from 'react';
+
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
@@ -9,20 +9,26 @@ import { SlLike, SlDislike } from "react-icons/sl";
 import { drivePhotoBaseUrl } from '../App';
 import Avatar from 'react-avatar';
 interface propsType {
+    user_id:string,
     _id: string,
     name: string,
     description: string,
     category: string,
     topic?: string,
-    posterId?: string | null
+    posterId?: string | null,
+    like:number|undefined,
+    unlike:number|undefined
 }
 
 function QuizCard(props: propsType) {
     // const {_id,name,description,category,topic,posterId} = props
     // console.log(props._id);
+    const showDescription=(description:string)=>(
+        description.split(' ').splice(0, 20).join(' ')+"..."
+    )
 
     return (
-        <Card sx={{ maxWidth: 345 }}>
+        <Card sx={{ maxWidth: 400 }}>
             {props.posterId?<CardMedia
                 sx={{ height: 140 }}
                 image={`${drivePhotoBaseUrl}${props.posterId}`}
@@ -47,12 +53,13 @@ function QuizCard(props: propsType) {
                     </Typography>}
                 <Typography variant="body2" color="text.secondary">
                     {/* //NOTE - Description */}
-                    {props.description}
+                    {/* {props.description} */}
+                    {showDescription(props.description)}
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button size="small" ><SlLike /><span>12k</span></Button>
-                <Button size="small"><SlDislike />200</Button>
+                <Button size="small" ><SlLike /><span>{props.like}</span></Button>
+                <Button size="small"><SlDislike />{props.unlike}</Button>
             </CardActions>
         </Card>
     );

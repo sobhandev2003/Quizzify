@@ -1,0 +1,24 @@
+.home{
+    display: flex;
+    gap: 2rem;
+}
+.quizzes-container{
+    position: relative;
+    width: 22rem;
+    height: fit-content;
+    /* border: 1px solid red; */
+}
+.quizzes-container:hover{
+    cursor: pointer;
+    
+}
+.quiz-card{
+    width: 100%;
+}
+.edit-btn{
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 2rem;
+    color: rgb(9, 9, 245);
+}

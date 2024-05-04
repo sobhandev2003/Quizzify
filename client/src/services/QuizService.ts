@@ -54,7 +54,7 @@ export const createQuiz = async (quizDetaisl: Quiz) => {
 
 export const getAllQuiz = async () => {
     try {
-        const response = await axios.get(`http://127.0.0.1:5001/quiz/get`);
+        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/quiz/get`);
         // console.log(response.data[0]);
 
             return response.data;

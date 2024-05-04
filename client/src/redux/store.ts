@@ -1,10 +1,12 @@
 
 import { configureStore } from "@reduxjs/toolkit";
 import userAccountReducer from "./reducer/userAccount";
+import quizReducer from "./reducer/QuizReducer";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 export const store =configureStore({
     reducer:{
-        userAccountReducer:userAccountReducer
+        userAccountReducer:userAccountReducer,
+        quizReducer:quizReducer
     }
 })
 
