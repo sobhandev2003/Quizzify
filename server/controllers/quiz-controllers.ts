@@ -9,6 +9,7 @@ import { QuizQuestionModel } from "../models/question-schema";
 import { googleDrive, uploadImageInGoogleDrive } from "../utils/uploadImageInDrive";
 import { Buffer } from "buffer";
 import { imageMimeTypes } from "../assets/imagefiletype";
+import mongoose from "mongoose";
 //SECTION -  - Create new Quiz
 export const createNewQuiz = asyncHandler(async (req: Request, res: Response) => {
     const { Name,
@@ -19,8 +20,8 @@ export const createNewQuiz = asyncHandler(async (req: Request, res: Response) =>
         TotalScore,
         PassingScore,
         NumberOfAttendByAnyone } = req.body;
-        // console.log(req.body);
-        
+    // console.log(req.body);
+
     //NOTE - set poster file details if its exits 
     const file = req.file;
     let filePath: string | null = null;
@@ -71,10 +72,10 @@ export const createNewQuiz = asyncHandler(async (req: Request, res: Response) =>
             Description,
             Category,
             Topic,
-            NumberOfQuestion:Number(NumberOfQuestion) ,
-            TotalScore:Number(TotalScore),
+            NumberOfQuestion: Number(NumberOfQuestion),
+            TotalScore: Number(TotalScore),
             PassingScore,
-            NumberOfAttendByAnyone:Number(NumberOfAttendByAnyone)
+            NumberOfAttendByAnyone: Number(NumberOfAttendByAnyone)
         }
     )
 
@@ -98,13 +99,59 @@ export const createNewQuiz = asyncHandler(async (req: Request, res: Response) =>
 })
 
 //NOTE -  Get All Quiz
-export const getAllQuiz=asyncHandler(async(req: Request, res: Response)=>{
-const allQuiz=await Quiz.find();
-// console.log(allQuiz);
-
-res.json(allQuiz)
+export const getAllQuiz = asyncHandler(async (req: Request, res: Response) => {
+    const userId = (req as CustomRequest).user.id
+    // console.log(userId);
+    const allQuiz = await Quiz.find({ User_Id: { $ne: userId } });
+    // console.log(allQuiz);
+    res.json(allQuiz)
 
 })
+//NOTE - Gate your own create quiz
+export const getMyQuiz = asyncHandler(async (req: Request, res: Response) => {
+    const userId = (req as CustomRequest).user.id
+    // console.log(userId);
+   
+    const allQuiz = await Quiz.find({ User_Id:userId});
+    // if(!allQuiz){
+    //     res.status(404)
+    //     throw new Error("Not found")
+    // }
+    // console.log(allQuiz);
+    res.status(200).json(allQuiz)
+})
+//NOTE - Gate quiz by id
+export const getQuizById=asyncHandler(async(req:Request,res:Response)=>{
+    const quizId=req.params.id;
+    // console.log(quizId);
+    if(!mongoose.Types.ObjectId.isValid(quizId)){
+        res.status(400);
+        throw new Error("Invalid  id")
+    }
+    const quiz=await Quiz.findById(quizId);
+    res.status(200).json({success:true,quiz})
+    
+})
+//NOTE - Gate my quiz by id
+export const gateMyQuizById=asyncHandler(async(req:Request,res:Response)=>{
+    const userId = (req as CustomRequest).user.id
+    const quizId=req.params.id;
+    // console.log(userId);
+    // console.log(quizId);
+    if(!mongoose.Types.ObjectId.isValid(quizId)){
+        res.status(400);
+        throw new Error("Invalid  id")
+    }
+    
+    const quiz = await Quiz.findOne({_id:quizId,User_Id:userId});
+    // console.log(quiz);
+    if (!quiz) {
+        res.status(404)
+        throw new Error("Not found")
+    }
+    res.json({success:true,quiz})
+}
+)
 //SECTION - Delete exiting quiz
 export const deleteQuiz = asyncHandler(async (req: Request, res: Response) => {
     const quizId = req.query.quizId || null

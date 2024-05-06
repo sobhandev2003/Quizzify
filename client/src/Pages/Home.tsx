@@ -13,11 +13,10 @@ function Home() {
   const navigate = useNavigate()
   const dispatch= useAppDispatch();
   const [quizzes, setAllQuizzes] = useState<Quiz[] | null>(null);
-  const loginDetails = useAppSelector(state => state.userAccountReducer.loginUser);
 
 const handelNavigate=(quiz:Quiz,index:number):void=>{
  dispatch(setCurrentQuiz(quiz))
-  navigate(`/quiz-detail/${quiz._id}`)
+  navigate(`/quiz/detail/${quiz._id}`)
 }
 
   useEffect(() => {
@@ -28,11 +27,7 @@ const handelNavigate=(quiz:Quiz,index:number):void=>{
     })
   }, [])
 
-  useEffect(() => {
-    // console.log(loginDetails);
-    // console.log(quizzes);
-
-  }, [loginDetails])
+ 
   return (
     <div className='home'>
       {/* <h1>hghh</h1> */}

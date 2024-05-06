@@ -64,7 +64,9 @@ function Navbar() {
             {!isMobile ? (
               <>
               <div>
-                <NavLink to="/create-quiz">Create Quiz</NavLink>
+                <NavLink to="/quiz/create">Create Quiz</NavLink>
+                <NavLink to="/quiz/my-quiz">My Quiz</NavLink>
+                
               </div>
                 <div className="profile-details">
                   <img src={`${drivePhotoBaseUrl}${profilePhotoId}`} alt="profile photo" className="profile-photo" onClick={() => setIsProfileDetails(!isProfileDetails)} />

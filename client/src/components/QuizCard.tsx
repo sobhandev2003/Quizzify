@@ -17,7 +17,8 @@ interface propsType {
     topic?: string,
     posterId?: string | null,
     like:number|undefined,
-    unlike:number|undefined
+    unlike:number|undefined,
+    isValid?:boolean|undefined
 }
 
 function QuizCard(props: propsType) {
@@ -56,6 +57,7 @@ function QuizCard(props: propsType) {
                     {/* {props.description} */}
                     {showDescription(props.description)}
                 </Typography>
+                {props.isValid!==undefined && <Typography><b>Validity : </b>{props.isValid?"True":"False"}</Typography>}
             </CardContent>
             <CardActions>
                 <Button size="small" ><SlLike /><span>{props.like}</span></Button>

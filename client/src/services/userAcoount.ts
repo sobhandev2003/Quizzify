@@ -5,6 +5,7 @@ import axios, { isAxiosError } from "axios";
 import { LoginDetails, UserRegisterDetails } from "..";
 import toast from 'react-hot-toast';
 import { updateLoginUser } from "../redux/reducer/userAccount";
+import { handelServerRequestError } from "./handelServerRequestError";
 
 
 //SECTION - Register new user account
@@ -15,16 +16,7 @@ export const registerNewAccount = async (userData: UserRegisterDetails) => {
         toast.success(data.message)
         return data.success
     } catch (error) {
-        if (isAxiosError(error)) {
-            // Axios error
-            toast.error(error.response?.data.message);
-            return false;
-        } else {
-            // Other error types
-            console.error(error);
-            toast.error("Something wrong.");
-            return false;
-        }
+        handelServerRequestError(error)
     }
 }
 
@@ -46,16 +38,7 @@ export const loginExistingUser = async (loginData: LoginDetails, dispatch: any) 
         }
 
     } catch (error) {
-        if (isAxiosError(error)) {
-            console.log(error);
-            
-            toast.error(error.response?.data.message);
-        }
-        else {
-            // Other error types
-            console.error(error);
-            toast.error("Something wrong.");
-        }
+        handelServerRequestError(error)
     }
 }
 
@@ -74,14 +57,7 @@ export const logoutLoginUser = async (dispatch: any, navigate: any) => {
         }
 
     } catch (error) {
-        if (isAxiosError(error)) {
-            toast.error(error.response?.data.message);
-        }
-        else {
-            // Other error types
-            console.error(error);
-            toast.error("Something wrong.");
-        }
+        handelServerRequestError(error)
     }
 }
 
@@ -137,13 +113,6 @@ export const updateProfilePhoto = async (photo: File, dispatch: any) => {
         }
 
     } catch (error) {
-        if (isAxiosError(error)) {
-            toast.error(error.response?.data.message);
-        }
-        else {
-            // Other error types
-            console.error(error);
-            toast.error("Something wrong.");
-        }
+     handelServerRequestError(error)
     }
 }

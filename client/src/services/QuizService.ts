@@ -1,6 +1,9 @@
 import axios, { isAxiosError } from "axios";
 import { Quiz } from "..";
 import toast from "react-hot-toast";
+import { handelServerRequestError } from "./handelServerRequestError";
+import { AppDispatch } from "../redux/store";
+import { setCurrentQuiz, setIsUpdate, setQuestion } from "../redux/reducer/QuizReducer";
 
 
 export const createQuiz = async (quizDetaisl: Quiz) => {
@@ -41,23 +44,18 @@ export const createQuiz = async (quizDetaisl: Quiz) => {
 
 
     } catch (error) {
-        if (isAxiosError(error)) {
-            // console.log(error);
-            toast.error(error.response?.data.message)
-        }
-        else {
-            console.error(error);
-
-        }
+        handelServerRequestError(error)
     }
 }
 
 export const getAllQuiz = async () => {
     try {
-        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/quiz/get`);
+        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/quiz/get`,
+            { withCredentials: true }
+        );
         // console.log(response.data[0]);
 
-            return response.data;
+        return response.data;
     } catch (error) {
         if (isAxiosError(error)) {
             toast(error.message)
@@ -65,5 +63,59 @@ export const getAllQuiz = async () => {
         else {
             toast("Something wrong")
         }
+    }
+}
+
+export const getMyQuiz = async () => {
+    try {
+        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/quiz/get/my-quiz`,
+            {
+                withCredentials: true
+            });
+        // console.log(response.data);
+        return response.data
+    } catch (error) {
+        handelServerRequestError(error)
+    }
+}
+
+export const getQuizById = (quizId: string) => async (dispatch: AppDispatch) => {
+    try {
+        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/quiz/get/${quizId}`,
+            { withCredentials: true }
+        )
+        // console.log(response.data.quiz);
+        dispatch(setCurrentQuiz(response.data.quiz))
+        
+
+    } catch (error) {
+        handelServerRequestError(error)
+    }
+}
+export const getMyQuizById=(quizId:string)=>async(dispatch:AppDispatch)=>{
+    try {
+        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/quiz/get/my-quiz/${quizId}`,
+            { withCredentials: true }
+        )
+        // console.log(response.data);
+        dispatch(setCurrentQuiz(response.data.quiz))
+        dispatch(setIsUpdate(true))
+        
+    } catch (error) {
+        handelServerRequestError(error)
+    }
+}
+
+export const getQuestion =  (quizId: string)=>async(dispatch:AppDispatch) => {
+    try {
+        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/question/get?quizId=${quizId}`,
+            { withCredentials: true }
+        )
+
+        // console.log(response.data);
+        dispatch(setQuestion(response.data))
+
+    } catch (error) {
+        handelServerRequestError(error)
     }
 }
