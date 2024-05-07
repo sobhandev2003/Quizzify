@@ -1,6 +1,6 @@
 import '../css/Login.css'
 import { useFormik } from 'formik';
-import * as yup from 'yup';
+// import * as yup from 'yup';
 import { Button, TextField } from '@mui/material';
 import { LoginDetails } from '..';
 import { loginExistingUser } from '../services/userAcoount';
@@ -8,16 +8,9 @@ import {  useDispatch } from 'react-redux';
 import {  useAppSelector } from '../redux/store';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { loginValidationSchema } from '../utils/validationSchema';
 
-const validationSchema = yup.object({
-  email: yup
-    .string()
-    .email('Enter a valid email')
-    .required('Email is required'),
-  password: yup
-    .string()
-    .required('Password is required'),
-});
+
 
 //Login
 const Login = () => {
@@ -37,7 +30,7 @@ const Login = () => {
       email: '',
       password: '',
     },
-    validationSchema: validationSchema,
+    validationSchema: loginValidationSchema,
     onSubmit: (values) => {
       loginAccount(values)
     },

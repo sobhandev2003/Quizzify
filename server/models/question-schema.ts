@@ -1,11 +1,16 @@
 import mongoose, { Schema, Document } from "mongoose";
 import quizSchema from "./quiz-schema";
-
+export  interface OptionInterface extends Document{
+    A:string,
+    B:string,
+    C:string,
+    D:string,
+}
 export interface QuestionInterface extends Document {
     QuestionNumber: number;
     Question: string;
     Description:String;
-    Option: string[];
+    Option:OptionInterface;
     CorrectOption: string;
     Marks: number;
 }
@@ -17,7 +22,24 @@ export interface QuizQuestionInterface extends Document {
     RemainingScore?: Number;
 
 }
-
+const OptionSchema:Schema=new Schema({
+    A:{
+        type:String,
+        required:[true,"Option required"]
+    },
+    B:{
+        type:String,
+        required:[true,"Option required"]
+    },
+    C:{
+        type:String,
+        required:[true,"Option required"]
+    },
+    D:{
+        type:String,
+        required:[true,"Option required"]
+    }
+})
 const QuestionSchema: Schema = new Schema({
     QuestionNumber: {
         type: Number,
@@ -32,14 +54,9 @@ const QuestionSchema: Schema = new Schema({
         default:null
     },
     Option: {
-        type: [String],
+        type: OptionSchema,
         required: [true, "Option required."],
-        validate: {
-            validator: (value: String[]) => {
-                return value.length === 4;
-            },
-            message: "Number of option 4 required."
-        }
+       
     },
     CorrectOption: {
         type: String,
@@ -78,5 +95,6 @@ QuizQuestionSchema.pre<QuizQuestionInterface>("save", async function (next) {
     next();
 });
 
+export const OptionModel=mongoose.model<OptionInterface>("Option",OptionSchema)
 export const QuestionModel = mongoose.model<QuestionInterface>("Question", QuestionSchema);
 export const QuizQuestionModel = mongoose.model<QuizQuestionInterface>("QuizQuestion", QuizQuestionSchema);

@@ -15,6 +15,7 @@ import Profile from './Pages/Profile';
 import CreateQuiz from './components/CreateQuiz';
 import QuizDetails from './Pages/QuizDetails';
 import MyQuiz from './Pages/MyQuiz'
+import Question from './components/Question'
 
 export const drivePhotoBaseUrl="https://drive.google.com/thumbnail?id="
 // import logo from 'https://drive.google.com/file/d/1FG18bt3PW3F14iI6pMaYfvqv-2u-1Y9B/view'
@@ -29,7 +30,7 @@ const dispatch=useDispatch()
   return (
     <>
     <Navbar/>
-
+    {/* <Popu */}
     <Routes>
       <Route   path='/users/verify-email/:userId/:VerificationToken' element={<EmailVerification/>}/>
       <Route path='/users/reset-password/:userId/:VerificationToken' element={<ResetPassword/>}/>
@@ -44,10 +45,11 @@ const dispatch=useDispatch()
       <Route path='detail/:id' element={<QuizDetails/>}/>
       <Route path='my-quiz' element={<MyQuiz/>}/>
       <Route path=':userId/:id' element={<QuizDetails/>}/>
-
       </Route>
-      {/* <Route path='/create-quiz' element={<CreateQuiz/>}/> */}
-      {/* <Route path='/create-quiz' element={<CreateQuiz/>}/> */}
+    <Route path='/question'>
+      <Route path='add/:id' element={<Question/>}/>
+    </Route>
+   
     </Routes>
     </>
   )

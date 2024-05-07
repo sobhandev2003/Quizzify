@@ -5,7 +5,7 @@ import axios, { isAxiosError } from "axios";
 import { LoginDetails, UserRegisterDetails } from "..";
 import toast from 'react-hot-toast';
 import { updateLoginUser } from "../redux/reducer/userAccount";
-import { handelServerRequestError } from "./handelServerRequestError";
+import { handelServerRequestError } from "../utils/handelServerRequestError";
 
 
 //SECTION - Register new user account

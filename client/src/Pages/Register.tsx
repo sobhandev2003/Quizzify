@@ -6,19 +6,12 @@ import { registerNewAccount } from "../services/userAcoount";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../redux/store";
 import { useEffect } from "react";
+import { registerUserSchema } from "../utils/validationSchema";
 function Register() {
   const navigate=useNavigate()
   const LoginDetails = useAppSelector(state => state.userAccountReducer.loginUser);
   //NOTE - User schema 
-  const userSchema = yup.object({
-    UserName: yup.string().min(3).required(),
-    Email: yup.string().email().required(),
-    phoneNumber: yup.string().matches(/^\d+$/, 'Only numbers are allowed').length(10).required(),
-    Password: yup.string().matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]+$/,
-      'Password must contain one uppercase , one lowercase , one number, and one special character'
-    ).required().min(6)
-  })
+
   const registerUser = async(data:UserRegisterDetails) => {
     
     if (await registerNewAccount(data)) {
@@ -37,7 +30,7 @@ function Register() {
       <div className="mt-5">
         <Formik
           initialValues={{ UserName: "", Email: "", phoneNumber: "", Password: "" }}
-          validationSchema={userSchema}
+          validationSchema={registerUserSchema}
           onSubmit={(value) => registerUser(value)}
         >
           {({

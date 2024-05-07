@@ -1,7 +1,7 @@
 import axios, { isAxiosError } from "axios";
 import { Quiz } from "..";
 import toast from "react-hot-toast";
-import { handelServerRequestError } from "./handelServerRequestError";
+import { handelServerRequestError } from "../utils/handelServerRequestError";
 import { AppDispatch } from "../redux/store";
 import { setCurrentQuiz, setIsUpdate, setQuestion } from "../redux/reducer/QuizReducer";
 

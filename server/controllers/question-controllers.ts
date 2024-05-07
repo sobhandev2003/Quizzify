@@ -1,23 +1,36 @@
 import { Request, Response } from "express";
-import { QuestionInterface, QuestionModel, QuizQuestionModel } from "../models/question-schema";
+import { OptionInterface, OptionModel, QuestionInterface, QuestionModel, QuizQuestionModel } from "../models/question-schema";
 import Quiz from "../models/quiz-schema";
 import asyncHandler from "express-async-handler";
 import { CustomRequest } from "../middiliwer/tokenValidator";
+import mongoose from "mongoose";
 export const createNewQuestion = asyncHandler(async (req: Request, res: Response) => {
-    const { QuestionNumber, Question,Description, Option, CorrectOption, Marks }: QuestionInterface = req.body
+    // console.log(req.body);
+
+    const { QuestionNumber, Question, Description, Option, CorrectOption, Marks }: QuestionInterface = req.body
     const quizId = req.query.quizId
+    // console.log(quizId);
+    
+    if ( typeof quizId==="string" && !mongoose.Types.ObjectId.isValid(quizId)) {
+        res.status(400)
+        throw new Error("Quiz id not valid.")
+    }
     if (!QuestionNumber ||
         !Question ||
         !Option ||
-        !CorrectOption ||
-        !Marks ||
-        Marks < 1 ||
-        !Array.isArray(Option) ||
-        Option.length !== 4
+        !CorrectOption
+        // !Marks 
+        // Marks < 1 ||
+        // !Array.isArray(Option) 
+
     ) {
 
         res.status(400);
         throw new Error("Input not valid.")
+    }
+    if (!Option || !Option.A || !Option.B || !Option.C || !Option.D) {
+        res.status(400);
+        throw new Error("Option not valid.")
     }
 
     const quiz = await Quiz.findById(quizId);
@@ -26,7 +39,7 @@ export const createNewQuestion = asyncHandler(async (req: Request, res: Response
         throw new Error("Quiz not found");
     }
     //NOTE - Check Quiz crater usr and Who want to add quest are same
-        const userId=(req as CustomRequest).user.id;
+    const userId = (req as CustomRequest).user.id;
     if (userId.toString() !== quiz.User_Id.toString()) {
         res.status(401);
         throw new Error("User nit authorized.")
@@ -38,24 +51,36 @@ export const createNewQuestion = asyncHandler(async (req: Request, res: Response
         throw new Error("Quiz not found");
     }
 
-    if(quiz.NumberOfQuestion==quizQuestion.AllQuestion.length){
+    if (quiz.NumberOfQuestion == quizQuestion.AllQuestion.length) {
+
         res.status(405);
         throw new Error("All questions are created.")
     }
 
+    const questOption: OptionInterface = new OptionModel(Option)
     const questionData = {
         QuestionNumber: QuestionNumber, // Provide appropriate values here
         Question: Question,
-        Description:Description,
-        Option: Option,
+        Description: Description,
+        Option: questOption,
         CorrectOption: CorrectOption,
         Marks: Marks
     };
+    // console.log("ch1")
     const question: QuestionInterface = new QuestionModel(questionData);
+    // console.log("ch2")
     quizQuestion.AllQuestion.push(question);
+    // console.log("ch3")
     await quizQuestion.save();
+    // quizQuestion.AllQuestion.length
+    // console.log(quizQuestion.AllQuestion.length,quiz.NumberOfQuestion)
 
-    res.json(quizQuestion)
+    if (quizQuestion.AllQuestion.length === quiz.NumberOfQuestion) {
+        quiz.isValid = true;
+        await quiz.save()
+    }
+
+    res.json({success:true,message:"Question successfully add", quizQuestion})
 })
 
 //NOTE - get all quiz question
