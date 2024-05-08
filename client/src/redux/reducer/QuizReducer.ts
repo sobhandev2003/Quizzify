@@ -22,9 +22,10 @@ const initialState = {
         isValid: false
 
     },
-    isUpdate:false,
-    quizQuestion:[]
-    
+    isUpdate: false,
+    quizQuestion: [],
+    allQuestion: []
+
 }
 
 export const quizSlice = createSlice({
@@ -36,16 +37,22 @@ export const quizSlice = createSlice({
             state.quiz = action.payload
             // console.log(state.quiz);
         },
-        setIsUpdate:(state,action)=>{
-                state.isUpdate=action.payload
+        setIsUpdate: (state, action) => {
+            state.isUpdate = action.payload
         },
-        setQuestion:(state,action)=>{
-            
-            state.quizQuestion=action.payload
+        setQuestion: (state, action) => {
+            state.quizQuestion = action.payload
+        },
+        updateAllQuestion: (state, action) => {
+            state.allQuestion = action.payload;
+            // console.log(state.allQuestion);
             
         }
     }
 })
 
-export const { setCurrentQuiz,setIsUpdate,setQuestion } = quizSlice.actions
+export const { setCurrentQuiz,
+    setIsUpdate,
+    setQuestion,
+    updateAllQuestion } = quizSlice.actions
 export default quizSlice.reducer

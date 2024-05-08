@@ -1,8 +1,7 @@
 import '../css/Popup-Model.css'
 import { createPortal } from 'react-dom'
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
-function PopupModel({children}:any) {
+function PopupModel({children}:{children:any}) {
 const theme=createTheme({
   typography: {
     fontSize: 20, // Adjust the font size as needed
@@ -12,6 +11,7 @@ const theme=createTheme({
   return createPortal(<>
     <div className="modal-wrapper" ></div>
     <ThemeProvider theme={theme}>
+    
     <div className="modal-container">
       {children}
       {/* {handelSubmit} */}

@@ -15,7 +15,7 @@ import Profile from './Pages/Profile';
 import CreateQuiz from './components/CreateQuiz';
 import QuizDetails from './Pages/QuizDetails';
 import MyQuiz from './Pages/MyQuiz'
-import Question from './components/Question'
+import AddQuestions from './Pages/AddQuestions'
 
 export const drivePhotoBaseUrl="https://drive.google.com/thumbnail?id="
 // import logo from 'https://drive.google.com/file/d/1FG18bt3PW3F14iI6pMaYfvqv-2u-1Y9B/view'
@@ -47,9 +47,8 @@ const dispatch=useDispatch()
       <Route path=':userId/:id' element={<QuizDetails/>}/>
       </Route>
     <Route path='/question'>
-      <Route path='add/:id' element={<Question/>}/>
+      <Route path='add/:id' element={<AddQuestions/>}/>
     </Route>
-   
     </Routes>
     </>
   )

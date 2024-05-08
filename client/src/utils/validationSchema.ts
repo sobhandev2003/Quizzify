@@ -39,7 +39,15 @@ export const addQuestionSchema =  yup.object({
     Question: yup.string().min(5, 'Question must be at least 5 characters').required('Question is required'),
     Description: yup.string().required('Description is required'),
     Option: optionSchema,
-    CorrectOption: yup.string().min(1, 'Correct option must have at least 1 character').max(1, 'Correct option must have at most 1 character').required('Correct option is required'),
-    Marks: yup.number().min(1).required('Marks are required')
+    CorrectOption: yup.string().min(0., 'Correct option must have at least 1 character').max(1, 'Correct option must have at most 1 character').required('Correct option is required'),
+    Marks: yup.number().min(0).required('Marks are required')
+});
+export const updateQuestionSchema =  yup.object({
+    QuestionNumber: yup.string().max(4, 'Question number must be at most 4 characters'),
+    Question: yup.string(),
+    Description: yup.string(),
+    // Option: optionSchema,
+    CorrectOption: yup.string().min(1, 'Correct option must have at least 1 character').max(1, 'Correct option must have at most 1 character'),
+    Marks: yup.number().min(0)
 });
 

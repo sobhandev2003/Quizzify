@@ -80,7 +80,12 @@ export const createNewQuiz = asyncHandler(async (req: Request, res: Response) =>
     )
 
     await QuizQuestionModel.create(
-        { QuizId: newQuiz.id }
+        {
+            User_Id: userId,
+            QuizId: newQuiz.id,
+            TotalScore: newQuiz.TotalScore,
+            RemainingScore: newQuiz.TotalScore
+        }
     )
 
 
@@ -111,8 +116,8 @@ export const getAllQuiz = asyncHandler(async (req: Request, res: Response) => {
 export const getMyQuiz = asyncHandler(async (req: Request, res: Response) => {
     const userId = (req as CustomRequest).user.id
     // console.log(userId);
-   
-    const allQuiz = await Quiz.find({ User_Id:userId});
+
+    const allQuiz = await Quiz.find({ User_Id: userId });
     // if(!allQuiz){
     //     res.status(404)
     //     throw new Error("Not found")
@@ -121,35 +126,35 @@ export const getMyQuiz = asyncHandler(async (req: Request, res: Response) => {
     res.status(200).json(allQuiz)
 })
 //NOTE - Gate quiz by id
-export const getQuizById=asyncHandler(async(req:Request,res:Response)=>{
-    const quizId=req.params.id;
+export const getQuizById = asyncHandler(async (req: Request, res: Response) => {
+    const quizId = req.params.id;
     // console.log(quizId);
-    if(!mongoose.Types.ObjectId.isValid(quizId)){
+    if (!mongoose.Types.ObjectId.isValid(quizId)) {
         res.status(400);
         throw new Error("Invalid  id")
     }
-    const quiz=await Quiz.findById(quizId);
-    res.status(200).json({success:true,quiz})
-    
+    const quiz = await Quiz.findById(quizId);
+    res.status(200).json({ success: true, quiz })
+
 })
 //NOTE - Gate my quiz by id
-export const gateMyQuizById=asyncHandler(async(req:Request,res:Response)=>{
+export const gateMyQuizById = asyncHandler(async (req: Request, res: Response) => {
     const userId = (req as CustomRequest).user.id
-    const quizId=req.params.id;
+    const quizId = req.params.id;
     // console.log(userId);
     // console.log(quizId);
-    if(!mongoose.Types.ObjectId.isValid(quizId)){
+    if (!mongoose.Types.ObjectId.isValid(quizId)) {
         res.status(400);
         throw new Error("Invalid  id")
     }
-    
-    const quiz = await Quiz.findOne({_id:quizId,User_Id:userId});
+
+    const quiz = await Quiz.findOne({ _id: quizId, User_Id: userId });
     // console.log(quiz);
     if (!quiz) {
         res.status(404)
         throw new Error("Not found")
     }
-    res.json({success:true,quiz})
+    res.json({ success: true, quiz })
 }
 )
 //SECTION - Delete exiting quiz

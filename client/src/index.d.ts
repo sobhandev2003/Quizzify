@@ -54,6 +54,7 @@ export interface Option{
 }
 
 export interface QuestionType {
+    _id?:string
     QuestionNumber:string;
     Question:string;
     Description: string;

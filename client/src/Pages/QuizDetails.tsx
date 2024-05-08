@@ -131,6 +131,7 @@ function QuizDetails() {
                         <h3><b>Topic:</b>{quiz.Topic}</h3>
                         <p><b>Description:</b>{quiz.Description}</p>
                         <p><b>Number of Question:</b>{quiz.NumberOfQuestion}</p>
+                        <p><b>Total Score:</b>{quiz.TotalScore}</p>
                         <p><b>Maximum no. of  attend:</b>{quiz.NumberOfAttendByAnyone && Number(quiz.NumberOfAttendByAnyone) > 0 && quiz.NumberOfAttendByAnyone}</p>
                         <p><b>Created At:</b>{quiz.createdAt && new Date(quiz.createdAt).toLocaleString()} </p>
                         <p><b>Total number of submit:</b>{quiz.TotalNumberOfSubmit}</p>

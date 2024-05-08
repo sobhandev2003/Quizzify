@@ -16,10 +16,11 @@ export interface QuestionInterface extends Document {
 }
 
 export interface QuizQuestionInterface extends Document {
+    User_Id: mongoose.Types.ObjectId;
     QuizId: mongoose.Types.ObjectId;
     AllQuestion: QuestionInterface[];
-    TotalScore?: Number;
-    RemainingScore?: Number;
+    TotalScore: Number;
+    RemainingScore: Number;
 
 }
 const OptionSchema:Schema=new Schema({
@@ -69,6 +70,10 @@ const QuestionSchema: Schema = new Schema({
 });
 
 const QuizQuestionSchema: Schema = new Schema({
+    User_Id:{
+        type: mongoose.Schema.Types.ObjectId,
+        required: [true, "User Id required."]
+    },
     QuizId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true
@@ -77,10 +82,13 @@ const QuizQuestionSchema: Schema = new Schema({
         type: [QuestionSchema],
     },
     TotalScore: {
-            type:Number
+            type:Number,
+            
+            require:[true,"TotalScore required"]
     },
     RemainingScore: {
-        type:Number
+        type:Number,
+        require:[true,"TotalScore required"]
     }
     
 });
