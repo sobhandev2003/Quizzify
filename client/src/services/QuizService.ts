@@ -3,9 +3,9 @@ import { Quiz } from "..";
 import toast from "react-hot-toast";
 import { handelServerRequestError } from "../utils/handelServerRequestError";
 import { AppDispatch } from "../redux/store";
-import { setCurrentQuiz, setIsUpdate, setQuestion } from "../redux/reducer/QuizReducer";
+import { setCurrentQuiz, setIsUpdate } from "../redux/reducer/QuizReducer";
 
-
+//NOTE - Create a new Quiz
 export const createQuiz = async (quizDetaisl: Quiz) => {
     try {
         console.log(quizDetaisl);
@@ -48,6 +48,7 @@ export const createQuiz = async (quizDetaisl: Quiz) => {
     }
 }
 
+//NOTE - Get All quiz which are not created by login user
 export const getAllQuiz = async () => {
     try {
         const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/quiz/get`,
@@ -65,7 +66,7 @@ export const getAllQuiz = async () => {
         }
     }
 }
-
+//NOTE - Get all quiz which ar created by login user
 export const getMyQuiz = async () => {
     try {
         const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/quiz/get/my-quiz`,
@@ -78,7 +79,7 @@ export const getMyQuiz = async () => {
         handelServerRequestError(error)
     }
 }
-
+//Get a quiz by id
 export const getQuizById = (quizId: string) => async (dispatch: AppDispatch) => {
     try {
         const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/quiz/get/${quizId}`,
@@ -92,6 +93,7 @@ export const getQuizById = (quizId: string) => async (dispatch: AppDispatch) => 
         handelServerRequestError(error)
     }
 }
+//NOTE -  Get a quiz by id which is created by login user
 export const getMyQuizById=(quizId:string)=>async(dispatch:AppDispatch)=>{
     try {
         const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/quiz/get/my-quiz/${quizId}`,
@@ -106,16 +108,23 @@ export const getMyQuizById=(quizId:string)=>async(dispatch:AppDispatch)=>{
     }
 }
 
-export const getQuestion =  (quizId: string)=>async(dispatch:AppDispatch) => {
-    try {
-        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/question/get?quizId=${quizId}`,
-            { withCredentials: true }
-        )
+//NOTE - update a quiz some details [Description,NumberOfAttendByAnyone]
+//TODO - 
+// export const update
 
-        // console.log(response.data);
-        dispatch(setQuestion(response.data))
 
-    } catch (error) {
-        handelServerRequestError(error)
-    }
-}
+
+//NOTE - 
+// export const getQuestion =  (quizId: string)=>async(dispatch:AppDispatch) => {
+//     try {
+//         const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/question/get?quizId=${quizId}`,
+//             { withCredentials: true }
+//         )
+
+//         console.log(response.data);
+//         dispatch(setQuestion(response.data))
+
+//     } catch (error) {
+//         handelServerRequestError(error)
+//     }
+// }

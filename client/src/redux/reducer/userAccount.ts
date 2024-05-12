@@ -1,5 +1,6 @@
 
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { AttendQuizDetails } from "../..";
 
 export interface UserDetails{
     id:string;
@@ -7,6 +8,7 @@ export interface UserDetails{
     userName:string;
     phoneNumber:string
     profilePhotoId:string;
+    AttendQuizzes:AttendQuizDetails[] |[]
 }
 
 export interface userAccountState{
@@ -19,7 +21,8 @@ const initialState:userAccountState={
             email:"",
             userName:"",
             phoneNumber:"",
-            profilePhotoId:""
+            profilePhotoId:"",
+            AttendQuizzes:[] 
         }
 }
 
@@ -28,8 +31,7 @@ export const userAccountSlice=createSlice({
     initialState,
     reducers:{
         updateLoginUser:(state,action)=>{
-            // console.log(action.payload);
-            
+            // console.log(action.payload);   
             state.loginUser=action.payload
         }
     }

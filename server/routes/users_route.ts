@@ -7,6 +7,7 @@ import {
     loginUser,
     registerUser,
     resetPassword,
+    updateAttendQuizList,
     verifyEmail
 } from '../controllers/users-controllers';
 
@@ -27,4 +28,5 @@ Route.route("/login").post(loginUser);
 Route.route("/logout").get(logOutUser);
 Route.route("/").get(validation,getUserDetails);
 Route.route("/profile-photo").post(validation,upload.single('photo'),changeProfilePhoto)
+Route.route("/quiz/attend").patch(validation,updateAttendQuizList)
 export default Route;

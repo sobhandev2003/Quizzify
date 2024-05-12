@@ -11,13 +11,13 @@ import { setCurrentQuiz } from '../redux/reducer/QuizReducer';
 
 function Home() {
   const navigate = useNavigate()
-  const dispatch= useAppDispatch();
+  const dispatch = useAppDispatch();
   const [quizzes, setAllQuizzes] = useState<Quiz[] | null>(null);
 
-const handelNavigate=(quiz:Quiz,index:number):void=>{
- dispatch(setCurrentQuiz(quiz))
-  navigate(`/quiz/detail/${quiz._id}`)
-}
+  const handelNavigate = (quiz: Quiz, index: number): void => {
+    dispatch(setCurrentQuiz(quiz))
+    navigate(`/quiz/detail/${quiz._id}`)
+  }
 
   useEffect(() => {
     getAllQuiz().then((res): void => {
@@ -27,7 +27,7 @@ const handelNavigate=(quiz:Quiz,index:number):void=>{
     })
   }, [])
 
- 
+
   return (
     <div className='home'>
       {/* <h1>hghh</h1> */}
@@ -35,8 +35,9 @@ const handelNavigate=(quiz:Quiz,index:number):void=>{
         quizzes && <>
           {
             quizzes.map((quiz, index) => (
-              // const {Name}=quiz
-              <div key={quiz._id} className='quizzes-container' onClick={() =>handelNavigate(quiz,index)}>
+
+
+              quiz.isValid && <div key={quiz._id} className='quizzes-container' onClick={() => handelNavigate(quiz, index)}>
                 <QuizCard
                   user_id={quiz.User_Id}
                   _id={quiz._id}
@@ -49,6 +50,7 @@ const handelNavigate=(quiz:Quiz,index:number):void=>{
                   unlike={quiz.Unlike}
                 />
               </div>
+
             ))
           }
         </>

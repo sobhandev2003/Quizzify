@@ -4,11 +4,12 @@ import { useAppDispatch, useAppSelector } from "../redux/store";
 import { drivePhotoBaseUrl } from "../App";
 import Avatar from 'react-avatar'
 import { useNavigate, useParams } from "react-router-dom";
-import { getMyQuizById, getQuestion, getQuizById } from "../services/QuizService";
+import { getMyQuizById, getQuizById } from "../services/QuizService";
 import { setIsUpdate } from "../redux/reducer/QuizReducer";
 import PopupModel from "../components/PopupModel";
 import { ErrorMessage, Field, FieldArray, Formik } from "formik";
 import { addQuestionSchema } from "../utils/validationSchema";
+import { getAllQuestion } from "../services/QuestionService";
 
 function QuizDetails() {
     const navigate = useNavigate();
@@ -24,12 +25,18 @@ function QuizDetails() {
 
     const currentQuiz = useAppSelector(state => state.quizReducer.quiz);
     const isUpdateResponse = useAppSelector(state => state.quizReducer.isUpdate);
-    const quizQuestion = useAppSelector(state => state.quizReducer.quizQuestion);
+    const quizQuestion = useAppSelector(state => state.quizReducer.allQuestion);
     const loginDetails = useAppSelector(state => state.userAccountReducer.loginUser);
 
+    //SECTION - Navigation
     const handleUpdateNavigate = (): void => {
         navigate(`/quiz/update/${quiz?._id}`)
     }
+
+    const handelQuizStartNavigation=()=>{
+        navigate(`/quiz/start/${quiz?._id}`)
+    }
+
     //SECTION - Template
 
     // const addQuestionModel = (
@@ -99,7 +106,7 @@ function QuizDetails() {
         setQuiz(currentQuiz)
         setIsQuizUpdate(isUpdateResponse)
         if (currentQuiz._id) {
-            dispatch(getQuestion(currentQuiz._id))
+            dispatch(getAllQuestion(currentQuiz._id))
         }
     }, [currentQuiz, isUpdateResponse])
 
@@ -112,8 +119,6 @@ function QuizDetails() {
         !currentQuiz?.Name && params?.id && params?.userId
             ? dispatch(getMyQuizById(params.id))
             : dispatch(getQuizById(params.id!));
-
-
     }, [])
 
 
@@ -145,8 +150,7 @@ function QuizDetails() {
                                 <button style={{ border: "1px solid red" }}>Update</button>
                                 <button onClick={() => navigate(`/question/add/${quiz._id}`)}>Add Question</button>
                             </> : <>
-                                <button style={{ border: "1px solid red" }}>Start</button>
-
+                                <button onClick={handelQuizStartNavigation} style={{ border: "1px solid red" }}>Start</button>
                             </>
                         }
 

@@ -1,9 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
-import User, { IUser } from "../models/users-schema";
+import User, { AttendQuizDetails, IUser } from "../models/users-schema";
 import bcrypt from "bcrypt"
-import fs from 'fs'
-import path from "path";
-
+import asyncHandler from "express-async-handler"
+import Quiz from "../models/quiz-schema";
 import {
     PasswordValidator,
     emailValidator,
@@ -211,7 +210,7 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
                 expires: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
                 // httpOnly: true,
                 sameSite: 'none',
-                secure:true
+                secure: true
             })
 
             res.status(200).json({ Success: true });
@@ -227,41 +226,41 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
 }
 
 //SECTION - Logout user
- export const logOutUser =async(req:Request,res:Response)=>{  
-     res.clearCookie('authToken',{
-        path:'/',
-        sameSite:"none",
-        httpOnly:true,
-        secure:true
+export const logOutUser = async (req: Request, res: Response) => {
+    res.clearCookie('authToken', {
+        path: '/',
+        sameSite: "none",
+        httpOnly: true,
+        secure: true
     })
     const userDetails = {
-        id:"",
-        email:"",
-        phoneNumber:"",
-        ProfilePhotoId:""
+        id: "",
+        email: "",
+        phoneNumber: "",
+        ProfilePhotoId: ""
     }
-    res.status(200).json({success:true,userDetails})
- }
+    res.status(200).json({ success: true, userDetails })
+}
 
 //SECTION -  Get login user details
 export const getUserDetails = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const user = (req as CustomRequest).user;
-        const tokenExpireTime = (req as CustomRequest).expireTime;
-        const fulUserDetails:IUser|null = await User.findById(user.id);
+        // const tokenExpireTime = (req as CustomRequest).expireTime;
+        const fulUserDetails: IUser | null = await User.findById(user.id);
         if (!fulUserDetails) {
             res.status(404)
             throw new Error("Not found")
         }
         const userDetails = {
-            id:fulUserDetails.id||"",
-            userName:fulUserDetails.UserName||"",
-            email: fulUserDetails.Email||"",
-            phoneNumber: fulUserDetails.phoneNumber||"",
-            profilePhotoId: fulUserDetails.ProfilePhotoId||""
-
+            id: fulUserDetails.id || "",
+            userName: fulUserDetails.UserName || "",
+            email: fulUserDetails.Email || "",
+            phoneNumber: fulUserDetails.phoneNumber || "",
+            profilePhotoId: fulUserDetails.ProfilePhotoId || "",
+            AttendQuizzes: fulUserDetails.AttendQuizList
         }
-        res.json({ success: true, userDetails, tokenExpireTime })
+        res.json({ success: true, userDetails })
 
     } catch (error) {
         next(error)
@@ -309,4 +308,34 @@ export const changeProfilePhoto = async (req: Request, res: Response, next: Next
         next(error);
     }
 }
+
+// SECTION - Update attend quiz list
+
+export const updateAttendQuizList = asyncHandler(async (req: Request, res: Response) => {
+
+    const userId = (req as CustomRequest).user.id;
+    const { Quiz_ID, Quiz_Name, Quiz_Category, Score } = req.body
+    // console.log({ Quiz_ID, Quiz_Name, Quiz_Category, Score, IsPassed });
+    
+    if (!Quiz_ID || !Quiz_Name || !Quiz_Category || !Score ) {
+        res.status(400);
+        throw new Error("Request invalid")
+    }
+    // const tokenExpireTime = (req as CustomRequest).expireTime;
+    const user: IUser | null = await User.findById(userId);
+    if (!user) {
+        res.status(404)
+        throw new Error("Not found")
+    }
+    const quiz=await Quiz.findById(Quiz_ID);
+    if(!quiz){
+        res.status(404)
+        throw new Error("Not found")
+    }
+    //TODO - 
+    const attendQuizDetails = new AttendQuizDetails({ Quiz_ID, Quiz_Name, Quiz_Category, Score, IsPassed:Score>=Number(quiz.PassingScore) });
+    user.AttendQuizList.push(attendQuizDetails);
+    await user.save();
+    res.json({ success: true, message: "Successfully updated", attendQuizDetails })
+})
 

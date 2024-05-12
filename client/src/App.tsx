@@ -16,13 +16,19 @@ import CreateQuiz from './components/CreateQuiz';
 import QuizDetails from './Pages/QuizDetails';
 import MyQuiz from './Pages/MyQuiz'
 import AddQuestions from './Pages/AddQuestions'
+import AttendQuiz from './Pages/AttendQuiz'
+import Result from './Pages/Result'
+import { useAppDispatch } from './redux/store'
+
 
 export const drivePhotoBaseUrl="https://drive.google.com/thumbnail?id="
 // import logo from 'https://drive.google.com/file/d/1FG18bt3PW3F14iI6pMaYfvqv-2u-1Y9B/view'
 function App() {
-const dispatch=useDispatch()
+
+const dispatch=useAppDispatch()
   useEffect(() => {
-    getUserDetails(dispatch)
+    // console.log(cookie); 
+    dispatch(getUserDetails())
   }, []);
 
 
@@ -45,10 +51,12 @@ const dispatch=useDispatch()
       <Route path='detail/:id' element={<QuizDetails/>}/>
       <Route path='my-quiz' element={<MyQuiz/>}/>
       <Route path=':userId/:id' element={<QuizDetails/>}/>
+      <Route path='start/:id' element={<AttendQuiz/>}/>
       </Route>
     <Route path='/question'>
       <Route path='add/:id' element={<AddQuestions/>}/>
     </Route>
+    <Route path='/result/:id' element={<Result/>}/>
     </Routes>
     </>
   )

@@ -62,3 +62,12 @@ export interface QuestionType {
     CorrectOption:string;
     Marks:number
 }
+export interface AttendQuizDetails{
+        _id?:string
+        Quiz_ID: string,
+        Quiz_Name: string,
+        Quiz_Category: string,
+        Score: number,
+        IsPassed:boolean
+   
+}

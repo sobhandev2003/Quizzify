@@ -2,10 +2,11 @@
 
 
 import axios, { isAxiosError } from "axios";
-import { LoginDetails, UserRegisterDetails } from "..";
+import { AttendQuizDetails, LoginDetails, UserRegisterDetails } from "..";
 import toast from 'react-hot-toast';
 import { updateLoginUser } from "../redux/reducer/userAccount";
 import { handelServerRequestError } from "../utils/handelServerRequestError";
+import { AppDispatch } from "../redux/store";
 
 
 //SECTION - Register new user account
@@ -21,7 +22,7 @@ export const registerNewAccount = async (userData: UserRegisterDetails) => {
 }
 
 //SECTION - Login Existing User
-export const loginExistingUser = async (loginData: LoginDetails, dispatch: any) => {
+export const loginExistingUser =  (loginData: LoginDetails)=>async(dispatch:AppDispatch) => {
 
     try {
         const response = await axios.post(
@@ -32,7 +33,8 @@ export const loginExistingUser = async (loginData: LoginDetails, dispatch: any) 
             })
 
         if (response.data) {
-            getUserDetails(dispatch)
+            // getUserDetails(dispatch)
+            dispatch(getUserDetails())
             toast.success("Successfully login.")
 
         }
@@ -44,7 +46,7 @@ export const loginExistingUser = async (loginData: LoginDetails, dispatch: any) 
 
 //SECTION - Logout current login user account
 
-export const logoutLoginUser = async (dispatch: any, navigate: any) => {
+export const logoutLoginUser =  ( navigate: any) =>async(dispatch:AppDispatch)=> {
     try {
         const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/users/logout`, {
             withCredentials: true,
@@ -62,7 +64,7 @@ export const logoutLoginUser = async (dispatch: any, navigate: any) => {
 }
 
 //SECTION - Gate user details
-export const getUserDetails = async (dispatch: any) => {
+export const getUserDetails =() =>async(dispatch:AppDispatch)=>{
     try {
 
         const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/users/`, {
@@ -86,13 +88,13 @@ export const getUserDetails = async (dispatch: any) => {
 }
 
 
-export const updateProfilePhoto = async (photo: File, dispatch: any) => {
+export const updateProfilePhoto =  (photo: File)=>async(dispatch:AppDispatch) => {
     try {
 
         const formData = new FormData()
         formData.append('photo', photo)
-            console.log( `${import.meta.env.VITE_BASE_URL}/users/profile-photo`);
-            
+        console.log(`${import.meta.env.VITE_BASE_URL}/users/profile-photo`);
+
         const response = await axios.post(
             `${import.meta.env.VITE_BASE_URL}/users/profile-photo`,
             formData,
@@ -101,18 +103,34 @@ export const updateProfilePhoto = async (photo: File, dispatch: any) => {
             }
         );
         console.log(response);
-        
+
         const data = response.data
-        
+
         if (data.success) {
             toast.success("Successfully update profile photo")
-            getUserDetails(dispatch)
+           dispatch( getUserDetails())
         }
         else {
             toast.error(data.message)
         }
 
     } catch (error) {
-     handelServerRequestError(error)
+        handelServerRequestError(error)
+    }
+}
+
+//SECTION - Add current submit quiz details
+export const addCurrentSubmitQuizDetails = (quizDetails: AttendQuizDetails) => async (dispatch: AppDispatch)=> {
+    try {
+        
+        const response = await axios.patch(`${import.meta.env.VITE_BASE_URL}/users/quiz/attend`,quizDetails,{
+            withCredentials: true, // include cookies
+        })
+        // console.log(response.data);
+        dispatch(getUserDetails())
+        
+
+    } catch (error) {
+        handelServerRequestError(error)
     }
 }

@@ -5,8 +5,13 @@ import { emailValidator, phoneNumberValidator } from "../validator";
 interface IAttendQuizDetails {
     // Define properties of AttendQuizDetails
     // Example:
-    quizId: string;
-    score: number;
+    Quiz_Id: string;
+    Quiz_Name:string;
+    Quiz_Category:string;
+    
+    Score: number;
+    IsPassed:boolean;
+
     // Add more properties as per your requirements
 }
 
@@ -19,7 +24,7 @@ export interface IUser extends Document {
     VerificationToken: string | null;
     IsVerified: boolean;
     TotalAttendNumberOfQuiz: number;
-    AttendQuiz: IAttendQuizDetails[];
+    AttendQuizList: IAttendQuizDetails[];
     createdAt: Date;
     updatedAt: Date;
 }
@@ -27,21 +32,25 @@ export interface IUser extends Document {
 //!SECTION
 
 
-const AttendQuizDetails=new mongoose.Schema({
+const AttendQuizDetailsSchema:Schema=new mongoose.Schema({
     Quiz_ID:{
         type:mongoose.Schema.Types.ObjectId,
         required:[true,"Quiz id mandatory."]
+    },
+    Quiz_Name:{
+        type:String,
+        required:[true,"Quiz name mandatory."]
+    },
+    Quiz_Category:{
+        type:String,
+        required:[true,"Quiz category mandatory."]
     },
     Score:{
             type:Number,
             required:[true,"Score mandatory."]
 
     },
-    NumberOfAttend:{
-        type:Number,
-        default:0
-    },
-    isPassed:{
+    IsPassed:{
         type:Boolean,
         required:[true,"Passing status mandatory."]
     }
@@ -99,10 +108,11 @@ const usersSchema=new mongoose.Schema({
         type:Number,
         default:0
     },
-    AttendQuiz:[AttendQuizDetails],
+    AttendQuizList:[AttendQuizDetailsSchema],
 },
 {timestamps:true}
 )
 
 
+export const AttendQuizDetails= mongoose.model<IAttendQuizDetails>("AttendQuizDetails",AttendQuizDetailsSchema);
 export default mongoose.model("User",usersSchema);

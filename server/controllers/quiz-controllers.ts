@@ -51,9 +51,15 @@ export const createNewQuiz = asyncHandler(async (req: Request, res: Response) =>
     }
     if (Number(TotalScore) < 5) {
         res.status(400);
-        if (filePath) {
-        }
+        // if (filePath) {
+
+        // }
         throw new Error("Total score must geterr than 4.");
+    }
+
+    if(Number(TotalScore)<Number(PassingScore)){
+            res.status(400)
+            throw new Error("Passing score must be less than total score")
     }
     //NOTE - Check user account exit or not who want to create Quiz.
     const userId = (req as CustomRequest).user.id
@@ -103,6 +109,31 @@ export const createNewQuiz = asyncHandler(async (req: Request, res: Response) =>
     res.json({ success: true, message: "Quiz created successfully." })
 })
 
+//NOTE - Update a existing quiz {Description,NumberOfAttendByAnyone}
+export const updateQuiz = asyncHandler(async (req: Request, res: Response) => {
+    const {quizId}=req.query;
+    const userId=(req as CustomRequest).user.id;
+    const {Description,NumberOfAttendByAnyone}=req.body;
+    if(!Description && !NumberOfAttendByAnyone){
+        res.status(400)
+        throw new Error("Invalid input")
+    }
+
+    const quiz=await Quiz.findOne({_id:quizId,User_Id:userId})
+    if(!quiz){
+        res.status(404)
+        throw new Error("Quiz not found")
+    }
+    if(Description && Description!==quiz.Description){
+        quiz.Description=Description;
+    }
+    if(NumberOfAttendByAnyone && NumberOfAttendByAnyone>=0){
+        quiz.NumberOfAttendByAnyone=NumberOfAttendByAnyone;
+    }
+    await quiz.save();
+
+    res.status(200).json({success:true,message:"Successfully Updated",quiz});
+})
 //NOTE -  Get All Quiz
 export const getAllQuiz = asyncHandler(async (req: Request, res: Response) => {
     const userId = (req as CustomRequest).user.id

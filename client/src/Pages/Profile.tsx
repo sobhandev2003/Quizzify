@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux';
 import { updateProfilePhoto } from '../services/userAcoount';
 import toast from 'react-hot-toast';
 import { UserDetails } from '../redux/reducer/userAccount';
-import { useAppSelector } from '../redux/store';
+import { useAppDispatch, useAppSelector } from '../redux/store';
 import { drivePhotoBaseUrl } from '../App';
+import PreviousAttendQuizDetails from '../components/PreviousAttendQuizDetails';
 
 function Profile() {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const [photo, setPhoto] = useState<File | null>(null)
   //NOTE - User basic details
   const [userDetails, setUserDetails] = useState<UserDetails>(
@@ -16,21 +16,22 @@ function Profile() {
       email: "",
       userName: "",
       phoneNumber: "",
-      profilePhotoId: ""
+      profilePhotoId: "",
+      AttendQuizzes: []
     }
   )
 
   const LoginDetails = useAppSelector(state => state.userAccountReducer.loginUser);
-//NOTE - Handel profile photo change request
-  const handelUpdateProfilePhoto = (e:React.FormEvent) => {
+  //NOTE - Handel profile photo change request
+  const handelUpdateProfilePhoto = (e: React.FormEvent) => {
     e.preventDefault()
     if (photo) {
-      updateProfilePhoto(photo, dispatch)
+      dispatch(updateProfilePhoto(photo))
       // console.log(photo);
-      
+
     }
-    else{
-      toast.error("Photo is missing")      
+    else {
+      toast.error("Photo is missing")
     }
   }
 
@@ -42,36 +43,58 @@ function Profile() {
       setPhoto(selectedFile);
     }
   }
-//NOTE - create from for change user profilePhoto
-const profilePhotoChangeFrom=(
-<form onSubmit={handelUpdateProfilePhoto}>
+  //NOTE - create from for change user profilePhoto
+  const profilePhotoChangeFrom = (
+    <form onSubmit={handelUpdateProfilePhoto}>
       <input type="file" name="photo" onChange={handelInputChange} required />
       <button type='submit' >Update</button>
-      
-      </form>
-)
 
-  useEffect(()=>{
-    if (LoginDetails.email.length>0) {
+    </form>
+  )
+
+  useEffect(() => {
+    if (LoginDetails.email.length > 0) {
       setUserDetails(LoginDetails);
     }
-  },[LoginDetails])
-  
+  }, [LoginDetails])
+
 
   return (
     <div>
       {/* //NOTE -  input for change profile photo */}
       <div>
-      {profilePhotoChangeFrom}
+        {profilePhotoChangeFrom}
       </div>
 
-    <div>
-      <h3>{userDetails.userName}</h3>
-      <h5>{userDetails.email}</h5>
-      <img src={`${drivePhotoBaseUrl}${userDetails.profilePhotoId}`} alt="profile-photo" />
-      {/* //TODO -  */}
-    </div>
-      
+      <div>
+        <h3>{userDetails.userName}</h3>
+        <h5>{userDetails.email}</h5>
+        <img src={`${drivePhotoBaseUrl}${userDetails.profilePhotoId}`} alt="profile-photo" />
+        {/* //TODO -  */}
+        <table>
+          <thead>
+            <tr>
+             
+                
+                <th>Quiz ID</th>
+                <th>Quiz Name</th>
+                <th>Quiz Category</th>
+                <th>Score</th>
+                <th>Passed</th>
+              
+            </tr>
+          </thead>
+          <tbody>
+          {
+          userDetails.AttendQuizzes && userDetails.AttendQuizzes.map((quizDetails,index) => (
+            <PreviousAttendQuizDetails key={index} quizDetails={quizDetails} />
+          ))
+        }
+          </tbody>
+        </table>
+       
+      </div>
+
 
     </div>
   )

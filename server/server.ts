@@ -10,7 +10,8 @@ import questionRoute from "./routes/question-route";
 import {errorHandler} from './middiliwer/errorHandeler'
 import { connectDB } from "./config/connectDb";
 const corsOptions = {
-    origin: 'http://localhost:3000',
+    // origin: 'http://localhost:3000',
+    origin: /^http:\/\/localhost:\d+$/,
     credentials: true // Allow cookies with CORS
 };
 

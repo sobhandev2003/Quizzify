@@ -1,7 +1,7 @@
 import "../css/Navbar.css";
 import { useEffect, useState } from "react"
 import { NavLink, useNavigate } from "react-router-dom"
-import { useAppSelector } from "../redux/store";
+import { useAppDispatch, useAppSelector } from "../redux/store";
 import { useDispatch } from "react-redux";
 import { logoutLoginUser } from "../services/userAcoount";
 import { isMobile } from 'react-device-detect';
@@ -26,10 +26,10 @@ function Navbar() {
   //NOTE - 
 
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const logOutAccount = () => {
-    logoutLoginUser(dispatch, navigate)
+    dispatch(logoutLoginUser( navigate))
   }
 
 

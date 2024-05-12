@@ -5,7 +5,7 @@ import { Button, TextField } from '@mui/material';
 import { LoginDetails } from '..';
 import { loginExistingUser } from '../services/userAcoount';
 import {  useDispatch } from 'react-redux';
-import {  useAppSelector } from '../redux/store';
+import {  useAppDispatch, useAppSelector } from '../redux/store';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loginValidationSchema } from '../utils/validationSchema';
@@ -14,14 +14,14 @@ import { loginValidationSchema } from '../utils/validationSchema';
 
 //Login
 const Login = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate=useNavigate()
   const LoginDetails = useAppSelector(state => state.userAccountReducer.loginUser);
   
   //NOTE - Login user 
   const loginAccount = (data: LoginDetails) => {
    
-    loginExistingUser(data, dispatch);
+    dispatch(loginExistingUser(data));
   }
 
   //NOTE - Formik 
