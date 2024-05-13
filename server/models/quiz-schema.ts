@@ -8,19 +8,23 @@ export interface Quiz extends Document {
     Topic?: string;
     NumberOfQuestion: number;
     TotalScore: number;
-    PassingScore?:number;
+    PassingScore?: number;
     NumberOfAttendByAnyone?: number;
     PosterId?: string | null;
     TotalNumberOfSubmit?: number;
-    Like?: number;
-    Unlike?: number;
+   
     createdAt?: Date;
     updatedAt?: Date;
-    isValid?:boolean
+    isValid?: boolean
+    //User who are like the quiz
+    LikeBy?: mongoose.Schema.Types.ObjectId[];
+
+    //User who are unlike the quiz
+    UnLikeBy?: mongoose.Schema.Types.ObjectId[];
 }
 
 const QuizSchema = new mongoose.Schema<Quiz>({
-    User_Id:{
+    User_Id: {
         type: mongoose.Schema.Types.ObjectId,
         required: [true, "User Id required."]
     },
@@ -52,9 +56,9 @@ const QuizSchema = new mongoose.Schema<Quiz>({
         min: 5,
         required: [true, "Total Score in Quiz required."]
     },
-    PassingScore:{
-                type:Number,
-                default:0
+    PassingScore: {
+        type: Number,
+        default: 0
     },
     NumberOfAttendByAnyone: {
         type: Number,
@@ -70,22 +74,24 @@ const QuizSchema = new mongoose.Schema<Quiz>({
         default: 0,
         min: 0
     },
-    Like: {
-        type: Number,
-        default: 0
+   
+    LikeBy: {
+        type:[mongoose.Schema.Types.ObjectId],
+        // unique:[true]
     },
-    Unlike: {
-        type: Number,
-        default: 0
+   
+    UnLikeBy: {
+        type:[mongoose.Schema.Types.ObjectId],
+        // unique:[true]
     },
-    isValid:{
-        type:Boolean,
-        default:false
+    isValid: {
+        type: Boolean,
+        default: false
     }
 
 },
-{
-    timestamps: true
-});
+    {
+        timestamps: true
+    });
 
 export default mongoose.model<Quiz>("QUIZ", QuizSchema);

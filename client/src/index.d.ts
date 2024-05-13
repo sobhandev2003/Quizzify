@@ -1,3 +1,4 @@
+
 export interface UserRegisterDetails {
     UserName: string;
     Email: string
@@ -39,11 +40,12 @@ export interface Quiz {
     NumberOfAttendByAnyone?: number;
     PosterId?: string | null;
     TotalNumberOfSubmit?: number;
-    Like?: number;
-    Unlike?: number;
+    
     createdAt?: Date;
     updatedAt?: Date;
-    isValid?: boolean
+    isValid?: boolean;
+    LikeBy?:string[];
+    UnLikeBy?:string[]
 }
 
 export interface Option{
@@ -71,3 +73,5 @@ export interface AttendQuizDetails{
         IsPassed:boolean
    
 }
+
+// const NavigateType=typeof useNavigate()

@@ -8,6 +8,11 @@ import Typography from '@mui/material/Typography';
 import { SlLike, SlDislike } from "react-icons/sl";
 import { drivePhotoBaseUrl } from '../App';
 import Avatar from 'react-avatar';
+import { useSelector } from 'react-redux';
+import { useAppSelector } from '../redux/store';
+import { useEffect, useState } from 'react';
+import { AiFillLike ,AiFillDislike} from "react-icons/ai";
+// import { AiFillDislike } from "react-icons/ai";
 interface propsType {
     user_id:string,
     _id: string,
@@ -16,14 +21,23 @@ interface propsType {
     category: string,
     topic?: string,
     posterId?: string | null,
-    like:number|undefined,
-    unlike:number|undefined,
+    likeBy:string[],
+    unlikeBy:string[],
     isValid?:boolean|undefined
 }
 
 function QuizCard(props: propsType) {
     // const {_id,name,description,category,topic,posterId} = props
-    // console.log(props._id);
+    // console.log(props.unlike);
+    // const [user,setUser]=useState<UserDetails|null>(null)
+    const [isLiked,setIsLiked]=useState<boolean>(false)
+    const [isUnLiked,setIsUnLiked]=useState<boolean>(false)
+    const loginUser=useAppSelector(state=>state.userAccountReducer.loginUser);
+    useEffect(()=>{
+        // setUser(loginUser);
+        setIsLiked(props.likeBy.includes(loginUser.id))
+        setIsUnLiked(props.unlikeBy.includes(loginUser.id))
+    },[loginUser])
     const showDescription=(description:string)=>(
         description.split(' ').splice(0, 20).join(' ')+"..."
     )
@@ -60,8 +74,9 @@ function QuizCard(props: propsType) {
                 {props.isValid!==undefined && <Typography><b>Validity : </b>{props.isValid?"True":"False"}</Typography>}
             </CardContent>
             <CardActions>
-                <Button size="small" ><SlLike /><span>{props.like}</span></Button>
-                <Button size="small"><SlDislike />{props.unlike}</Button>
+                <Button size="small" >{isLiked?<AiFillLike />:<SlLike />}<span>{props.likeBy.length}</span></Button>
+                <Button size="small">{isUnLiked? <AiFillDislike />:<SlDislike />}<span>{props.unlikeBy.length}</span></Button>
+
             </CardActions>
         </Card>
     );

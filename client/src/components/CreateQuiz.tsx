@@ -1,12 +1,17 @@
-import { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import '../css/CreateQuiz.css'
-// import { Quiz } from '..'
 import { createQuiz } from '../services/QuizService';
 import { useFormik } from 'formik';
 import * as Yup from "yup"
+import { useAppSelector } from '../redux/store';
 
 function CreateQuiz() {
+
+    const navigate=useNavigate();
+
+    const loginDetails=useAppSelector(state=>state.userAccountReducer.loginUser)
     //NOTE - 
+  
     const quizSchema = Yup.object({
         Name: Yup.string().required('Name is required'),
 
@@ -32,10 +37,10 @@ function CreateQuiz() {
             return Number(v) >= 0
         }),
 
-        poster: Yup.mixed().nullable().test('is-valid-image', 'Only png , jpeg or webp images are allowed', value => {
+        poster: Yup.mixed().nullable().test('is-valid-image', 'Only png , jpeg or webp images are allowed', (value) => {
             if (!value) return true; // if no file is uploaded, return true
             const acceptedFormats = ['image/png', 'image/jpeg', "image/webp"];
-            return acceptedFormats.includes(value.type);
+            return acceptedFormats.includes((value as File).type);
         }),
     });
 
@@ -44,7 +49,7 @@ function CreateQuiz() {
     //NOTE - 
     const handelCreateQuizRequest = (value: any) => {
         // console.log(quizDetails);
-        createQuiz(value)
+        createQuiz(value,navigate,loginDetails.id)
     }
 
 

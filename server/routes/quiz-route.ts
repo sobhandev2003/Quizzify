@@ -9,8 +9,8 @@ const Route=Router();
 Route.route("/").post(validation,upload.single("poster"),createNewQuiz);
 Route.route("/update").put(validation,updateQuiz);
 Route.route("/delete").delete(validation,deleteQuiz);
-Route.route("/like").put(validation,updateLike)
-Route.route("/unlike").put(validation,updateUnlike);
+Route.route("/like").patch(validation,updateLike)
+Route.route("/unlike").patch(validation,updateUnlike);
 Route.route("/submit").put(validation,submitQuiz)
 Route.route("/get").get(validation,getAllQuiz)
 Route.route("/get/my-quiz").get(validation,getMyQuiz)

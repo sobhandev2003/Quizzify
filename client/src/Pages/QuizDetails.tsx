@@ -4,13 +4,11 @@ import { useAppDispatch, useAppSelector } from "../redux/store";
 import { drivePhotoBaseUrl } from "../App";
 import Avatar from 'react-avatar'
 import { useNavigate, useParams } from "react-router-dom";
-import { getMyQuizById, getQuizById } from "../services/QuizService";
-import { setIsUpdate } from "../redux/reducer/QuizReducer";
-import PopupModel from "../components/PopupModel";
-import { ErrorMessage, Field, FieldArray, Formik } from "formik";
-import { addQuestionSchema } from "../utils/validationSchema";
-import { getAllQuestion } from "../services/QuestionService";
+import { getMyQuizById, getQuizById, updateLike, updateUnlike } from "../services/QuizService";
 
+import { getAllQuestion } from "../services/QuestionService";
+import { SlLike, SlDislike } from "react-icons/sl";
+import { AiFillLike, AiFillDislike } from "react-icons/ai";
 function QuizDetails() {
     const navigate = useNavigate();
     const params = useParams();
@@ -21,85 +19,39 @@ function QuizDetails() {
     const [quiz, setQuiz] = useState<Quiz>();
     const [isQuizUpdate, setIsQuizUpdate] = useState<boolean>()
     const [questions, setQuestions] = useState<any[] | null>(null)
-    const [isQuestionAdd, setIsQuestionAdd] = useState<boolean>(false)
+
+    const [isLiked, setIsLiked] = useState<boolean>(false)
+    const [isUnLiked, setIsUnLiked] = useState<boolean>(false)
 
     const currentQuiz = useAppSelector(state => state.quizReducer.quiz);
     const isUpdateResponse = useAppSelector(state => state.quizReducer.isUpdate);
     const quizQuestion = useAppSelector(state => state.quizReducer.allQuestion);
     const loginDetails = useAppSelector(state => state.userAccountReducer.loginUser);
 
+    //SECTION - 
+
+    const handelLike = () => {
+        // console.log(params.id);
+        setIsLiked(!isLiked)
+        setIsUnLiked(false)
+        dispatch(updateLike(params.id!))
+    }
+    const handelUnlike = () => {
+        // console.log(params.id);
+        setIsUnLiked(!isUnLiked)
+        setIsLiked(false)
+        dispatch(updateUnlike(params.id!))
+    }
     //SECTION - Navigation
     const handleUpdateNavigate = (): void => {
         navigate(`/quiz/update/${quiz?._id}`)
     }
 
-    const handelQuizStartNavigation=()=>{
+    const handelQuizStartNavigation = () => {
         navigate(`/quiz/start/${quiz?._id}`)
     }
 
     //SECTION - Template
-
-    // const addQuestionModel = (
-    //     <PopupModel>
-    //         <Formik
-    //             initialValues={{
-    //                 QuestionNumber: "",
-    //                 Question: "",
-    //                 Description: "",
-    //                 Option: [],
-    //                 CorrectOption: "",
-    //                 Marks: 0
-    //             }}
-
-    //             validationSchema={addQuestionSchema}
-    //             onSubmit={async(value) => {
-    //                 console.log(value);
-
-    //             }}
-    //         >
-    //             {({ values,
-    //                 errors,
-    //                 touched,
-    //                 handleChange,
-    //                 handleSubmit
-    //             }) => (
-    //                 <form onSubmit={handleSubmit}>
-    //                     <label>
-    //                         <input type="text" name="QuestionNumber" onChange={handleChange} value={values.QuestionNumber} required />
-    //                         <span>Question Number</span>
-    //                         {errors.QuestionNumber && touched.QuestionNumber && <span>{errors.QuestionNumber}</span>}
-    //                     </label>
-    //                     <label>
-    //                         <input type="text" name="Question" onChange={handleChange} value={values.Question} required />
-    //                         <span>Question </span>
-    //                         {errors.Question && touched.Question && <span>{errors.Question}</span>}
-    //                     </label>
-    //                     <label>
-    //                         <input type="text" name="Description" onChange={handleChange} value={values.Description} required />
-    //                         <span>Description</span>
-    //                         {errors.Description && touched.Description && <span>{errors.Description}</span>}
-    //                     </label>
-    //                     {/* //FIXME -  */}
-                      
-    //                     {/* //FIXME -  */}
-    //                     <label>
-    //                         <input type="text" name="CorrectOption" onChange={handleChange} value={values.CorrectOption} required />
-    //                         <span>CorrectOption</span>
-    //                         {errors.CorrectOption && touched.CorrectOption && <span>{errors.CorrectOption}</span>}
-    //                     </label>
-    //                     <label>
-    //                         <input type="number" name="Marks" onChange={handleChange} value={values.Marks} required />
-    //                         <span>Marks</span>
-    //                         {errors.Marks && touched.Marks && <span>{errors.Marks}</span>}
-    //                     </label>
-    //                     <button type="submit" className="register px-4 rounded-md">Add</button>
-    //                 </form>
-    //             )}
-
-    //         </Formik>
-
-    //     </PopupModel>
-    // )
 
     //SECTION - useEffect
     useEffect(() => {
@@ -112,13 +64,21 @@ function QuizDetails() {
 
     useEffect(() => {
         setQuestions(quizQuestion)
-        // console.log(quizQuestion);
+
     }, [quizQuestion])
+    //NOTE - 
+    useEffect(() => {
+  
+        setIsLiked(quiz?.LikeBy?.includes(loginDetails.id)!)
+        setIsUnLiked(quiz?.UnLikeBy?.includes(loginDetails.id)!)
+    }, [loginDetails,quiz])
     //NOTE - Call if page reload after 1st time open
     useEffect(() => {
         !currentQuiz?.Name && params?.id && params?.userId
             ? dispatch(getMyQuizById(params.id))
             : dispatch(getQuizById(params.id!));
+
+
     }, [])
 
 
@@ -154,7 +114,10 @@ function QuizDetails() {
                             </>
                         }
 
-
+                    </div>
+                    <div>
+                        <button onClick={handelLike}>{isLiked ? <AiFillLike /> : <SlLike />}</button>
+                        <button onClick={handelUnlike}>{isUnLiked ? <AiFillDislike /> : <SlDislike />}</button>
                     </div>
                 </> : <></>
             }

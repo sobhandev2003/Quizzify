@@ -4,12 +4,15 @@ import toast from "react-hot-toast";
 import { handelServerRequestError } from "../utils/handelServerRequestError";
 import { AppDispatch } from "../redux/store";
 import { setCurrentQuiz, setIsUpdate } from "../redux/reducer/QuizReducer";
+import { useNavigate } from "react-router-dom";
 
 //NOTE - Create a new Quiz
-export const createQuiz = async (quizDetaisl: Quiz) => {
+export const createQuiz = async (quizDetaisl: Quiz,navigate:ReturnType<typeof useNavigate>,userId:string) => {
+    const toastId=toast.loading("Creating...",{
+        duration:60000
+    })
     try {
-        console.log(quizDetaisl);
-
+        // console.log(quizDetaisl);
         const formData = new FormData();
         const { Name, Description, Category, Topic, TotalScore, NumberOfQuestion, NumberOfAttendByAnyone, PassingScore, poster } = quizDetaisl
         formData.append("Name", Name)
@@ -36,15 +39,18 @@ export const createQuiz = async (quizDetaisl: Quiz) => {
             { withCredentials: true }
         )
 
-        console.log(response.data);
+        // console.log(response.data);
         if (response.data.success) {
-            toast.success(response.data.message)
-
+            toast.success(response.data.message,{
+                id:toastId,
+                duration:1500
+            })
+            navigate(`/quiz/${userId}/${response.data.newQuiz._id}`)
         }
 
 
     } catch (error) {
-        handelServerRequestError(error)
+        handelServerRequestError(error,toastId)
     }
 }
 
@@ -54,7 +60,7 @@ export const getAllQuiz = async () => {
         const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/quiz/get`,
             { withCredentials: true }
         );
-        // console.log(response.data[0]);
+        // console.log(response.data);
 
         return response.data;
     } catch (error) {
@@ -109,22 +115,37 @@ export const getMyQuizById=(quizId:string)=>async(dispatch:AppDispatch)=>{
 }
 
 //NOTE - update a quiz some details [Description,NumberOfAttendByAnyone]
+
 //TODO - 
 // export const update
 
 
 
-//NOTE - 
-// export const getQuestion =  (quizId: string)=>async(dispatch:AppDispatch) => {
-//     try {
-//         const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/question/get?quizId=${quizId}`,
-//             { withCredentials: true }
-//         )
+//NOTE -Update like 
+export const updateLike = (quizId: string) => async (dispatch: AppDispatch) => {
+        try {
+            
+          const response=await  axios.patch(`${import.meta.env.VITE_BASE_URL}/quiz/like?quizId=${quizId}`,{},{
+                withCredentials: true
+            })
+                console.log(response.data);
+                
 
-//         console.log(response.data);
-//         dispatch(setQuestion(response.data))
+        } catch (error) {
+            handelServerRequestError(error)
+        }
+}
+//NOTE - Update unLike
+export const updateUnlike = (quizId: string) => async (dispatch: AppDispatch) => {
+    try {
+        
+      const response=await  axios.patch(`${import.meta.env.VITE_BASE_URL}/quiz/unlike?quizId=${quizId}`,{},{
+            withCredentials: true
+        })
+            console.log(response.data);
+            
 
-//     } catch (error) {
-//         handelServerRequestError(error)
-//     }
-// }
+    } catch (error) {
+        handelServerRequestError(error)
+    }
+}

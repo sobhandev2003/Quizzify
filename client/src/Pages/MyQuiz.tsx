@@ -36,8 +36,8 @@ function MyQuiz() {
               topic={quiz.Topic}
               description={quiz.Description}
               posterId={quiz.PosterId}
-              like={quiz.Like}
-              unlike={quiz.Unlike}
+              likeBy={quiz.LikeBy!}
+              unlikeBy={quiz.UnLikeBy!}
               isValid={quiz.isValid}
             />
           </div>

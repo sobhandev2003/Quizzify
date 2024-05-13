@@ -245,6 +245,8 @@ export const logOutUser = async (req: Request, res: Response) => {
 //SECTION -  Get login user details
 export const getUserDetails = async (req: Request, res: Response, next: NextFunction) => {
     try {
+        // console.log("ch");
+        
         const user = (req as CustomRequest).user;
         // const tokenExpireTime = (req as CustomRequest).expireTime;
         const fulUserDetails: IUser | null = await User.findById(user.id);
@@ -336,6 +338,12 @@ export const updateAttendQuizList = asyncHandler(async (req: Request, res: Respo
     const attendQuizDetails = new AttendQuizDetails({ Quiz_ID, Quiz_Name, Quiz_Category, Score, IsPassed:Score>=Number(quiz.PassingScore) });
     user.AttendQuizList.push(attendQuizDetails);
     await user.save();
+    if(!quiz.TotalNumberOfSubmit){
+        quiz.TotalNumberOfSubmit=1;
+    }else{
+        quiz.TotalNumberOfSubmit=quiz.TotalNumberOfSubmit+1;
+    }
+    await quiz.save();
     res.json({ success: true, message: "Successfully updated", attendQuizDetails })
 })
 
