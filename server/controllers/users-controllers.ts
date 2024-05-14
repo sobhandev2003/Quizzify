@@ -260,7 +260,9 @@ export const getUserDetails = async (req: Request, res: Response, next: NextFunc
             email: fulUserDetails.Email || "",
             phoneNumber: fulUserDetails.phoneNumber || "",
             profilePhotoId: fulUserDetails.ProfilePhotoId || "",
-            AttendQuizzes: fulUserDetails.AttendQuizList
+            AttendQuizzes: fulUserDetails.AttendQuizList,
+            LikedList:fulUserDetails.LikeQuizList,
+            DisLikedList:fulUserDetails.DislikeQuizList
         }
         res.json({ success: true, userDetails })
 
@@ -346,4 +348,5 @@ export const updateAttendQuizList = asyncHandler(async (req: Request, res: Respo
     await quiz.save();
     res.json({ success: true, message: "Successfully updated", attendQuizDetails })
 })
+
 

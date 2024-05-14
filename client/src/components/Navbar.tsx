@@ -2,15 +2,15 @@ import "../css/Navbar.css";
 import { useEffect, useState } from "react"
 import { NavLink, useNavigate } from "react-router-dom"
 import { useAppDispatch, useAppSelector } from "../redux/store";
-import { useDispatch } from "react-redux";
 import { logoutLoginUser } from "../services/userAcoount";
 import { isMobile } from 'react-device-detect';
 import { Link } from "react-router-dom";
 import { drivePhotoBaseUrl } from "../App";
 import { UserDetails } from "../redux/reducer/userAccount";
+import Avatar from "react-avatar"
 function Navbar() {
   const [isLogin, setIsLogin] = useState<Boolean>(false)
-  const [profilePhotoId, setProfilePhotId] = useState("16ZNm23QEmM4isLF7Rvfv8CPQpipsvAbe")
+  const [profilePhotoId, setProfilePhotId] = useState<string | null>(null)
   const [isProfileDetails, setIsProfileDetails] = useState(false)
   const [userDetails, setUserDetails] = useState<UserDetails>(
     {
@@ -18,7 +18,8 @@ function Navbar() {
       email: "",
       userName: "",
       phoneNumber: "",
-      profilePhotoId: ""
+      profilePhotoId: "",
+      AttendQuizzes: []
     }
   )
   const LoginDetails = useAppSelector(state => state.userAccountReducer.loginUser);
@@ -29,7 +30,7 @@ function Navbar() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const logOutAccount = () => {
-    dispatch(logoutLoginUser( navigate))
+    dispatch(logoutLoginUser(navigate))
   }
 
 
@@ -63,19 +64,22 @@ function Navbar() {
             </div>
             {!isMobile ? (
               <>
-              <div>
-                <NavLink to="/quiz/create">Create Quiz</NavLink>
-                <NavLink to="/quiz/my-quiz">My Quiz</NavLink>
-                
-              </div>
+                <div>
+                  <NavLink to="/quiz/create">Create Quiz</NavLink>
+                  <NavLink to="/quiz/my-quiz">My Quiz</NavLink>
+
+                </div>
                 <div className="profile-details">
-                  <img src={`${drivePhotoBaseUrl}${profilePhotoId}`} alt="profile photo" className="profile-photo" onClick={() => setIsProfileDetails(!isProfileDetails)} />
+                  {profilePhotoId ? <img src={`${drivePhotoBaseUrl}${profilePhotoId}`} alt="profile photo" className="profile-photo" onClick={() => setIsProfileDetails(!isProfileDetails)} /> : <Avatar name={userDetails.userName} className="profile-photo" onClick={() => setIsProfileDetails(!isProfileDetails)} />}
+
 
                   {
                     isProfileDetails &&
                     <div className="details-section">
                       <NavLink to={`/${userDetails.userName}`} className="user-basic-details">
-                        <img src={`${drivePhotoBaseUrl}${profilePhotoId}`} alt="profile photo" className="user-photo" />
+                        {/* <img src={`${drivePhotoBaseUrl}${profilePhotoId}`} alt="profile photo" className="user-photo" /> */}
+                        {profilePhotoId ? <img src={`${drivePhotoBaseUrl}${profilePhotoId}`} alt="profile photo" className="user-photo" /> : <Avatar name={userDetails.userName} className="profile-photo" />}
+
                         <div>
                           <h3>{userDetails.userName}</h3>
                           <h4>{userDetails.email}</h4>

@@ -5,10 +5,10 @@ import { QuestionType } from '..';
 import { addQuestion, deleteQuestion, getAllQuestion, updateQuestion } from '../services/QuestionService';
 import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../redux/store';
-import QuestionTemplate from '../components/QuestionTemplet';
 import PopupModel from '../components/PopupModel';
 import CloseIcon from '@mui/icons-material/Close';
-
+import { RiEdit2Fill } from "react-icons/ri";
+import { MdDeleteForever } from "react-icons/md";
 function AllQuestions() {
     const dispatch = useAppDispatch()
     const params = useParams();
@@ -32,8 +32,8 @@ function AllQuestions() {
         // console.log(quizId!,questionId);
         dispatch(deleteQuestion(quizId!, questionId))
     }
-    
-//SECTION - UseEffect
+
+    //SECTION - UseEffect
     useEffect(() => {
         setIsQuestionAdd(false)
         setQuestions(allQuestion)
@@ -222,19 +222,50 @@ function AllQuestions() {
             {isQuestionAdd && addQuestionModel}
             <button onClick={() => setIsQuestionAdd(true)}> ADD </button>
             <div>
-                {
-                    questions && questions.map((question, index) => (
-                        <div key={question._id} >
-                            <span>{index + 1}</span>
-                            <QuestionTemplate question={question} />
-                            <span>{question.CorrectOption}</span>
-                            <button onClick={() => setQuestionToUpdate(question)}>Update</button>
-                            <button onClick={() => handelQuestionDelete(question._id!)}>Delete</button>
-                            <hr />
-                        </div>
-                    ))
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Index</th>
+                            <th>Question No.</th>
+                            <th>Question</th>
+                            <th>Description</th>
+                            <th>Option A</th>
+                            <th>Option B</th>
+                            <th>Option C</th>
+                            <th>Option D</th>
+                            <th>Correct Option </th>
+                            <th>Marks </th>
+                            <th>Update </th>
+                            <th>Delete </th>
 
-                }
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {
+                        questions && questions.map((question, index) => (
+                            <tr key={question._id} >
+                                <td>{index }</td>
+                                <td>{question.QuestionNumber}</td>
+                                <td>{question.Question}</td>
+                                <td>{question.Description}</td>
+                                <td>{question.Option.A}</td>
+                                <td>{question.Option.B}</td>
+                                <td>{question.Option.C}</td>
+                                <td>{question.Option.D}</td>
+                                <td>{question.CorrectOption}</td>
+                                <td>{question.Marks}</td>
+                                <td><RiEdit2Fill onClick={() => setQuestionToUpdate(question)} /></td>
+                                <td><MdDeleteForever  onClick={() => handelQuestionDelete(question._id!)} /></td>
+                                {/* <button onClick={() => setQuestionToUpdate(question)}>Update</button>
+                                <button onClick={() => handelQuestionDelete(question._id!)}>Delete</button> */}
+                               
+                            </tr>
+                        ))
+
+                    }
+                    </tbody>
+                </table>
             </div>
             {questionToUpdate && updateQuestionModel}
         </>

@@ -1,14 +1,18 @@
 import { useEffect, useState } from "react"
-import { Quiz } from ".."
+import { Quiz, QuizUpdateDetails } from ".."
 import { useAppDispatch, useAppSelector } from "../redux/store";
 import { drivePhotoBaseUrl } from "../App";
 import Avatar from 'react-avatar'
 import { useNavigate, useParams } from "react-router-dom";
-import { getMyQuizById, getQuizById, updateLike, updateUnlike } from "../services/QuizService";
+import { deleteQuizById, getMyQuizById, getQuizById, updateLike, updateQuizById, updateUnlike } from "../services/QuizService";
 
 import { getAllQuestion } from "../services/QuestionService";
 import { SlLike, SlDislike } from "react-icons/sl";
 import { AiFillLike, AiFillDislike } from "react-icons/ai";
+import PopupModel from "../components/PopupModel";
+import { Formik, useFormik } from "formik";
+import { updateQuizSchema } from "../utils/validationSchema";
+import CloseIcon from '@mui/icons-material/Close';
 function QuizDetails() {
     const navigate = useNavigate();
     const params = useParams();
@@ -17,12 +21,13 @@ function QuizDetails() {
     // console.log(params.userId);
 
     const [quiz, setQuiz] = useState<Quiz>();
+
     const [isQuizUpdate, setIsQuizUpdate] = useState<boolean>()
     const [questions, setQuestions] = useState<any[] | null>(null)
 
     const [isLiked, setIsLiked] = useState<boolean>(false)
     const [isUnLiked, setIsUnLiked] = useState<boolean>(false)
-
+    const [updateQuiz, setUpdateQuiz] = useState<Quiz | null>(null);
     const currentQuiz = useAppSelector(state => state.quizReducer.quiz);
     const isUpdateResponse = useAppSelector(state => state.quizReducer.isUpdate);
     const quizQuestion = useAppSelector(state => state.quizReducer.allQuestion);
@@ -43,8 +48,12 @@ function QuizDetails() {
         dispatch(updateUnlike(params.id!))
     }
     //SECTION - Navigation
-    const handleUpdateNavigate = (): void => {
-        navigate(`/quiz/update/${quiz?._id}`)
+    const handelQuizUpdate = (value:QuizUpdateDetails): void => {
+        // navigate(`/quiz/update/${quiz?._id}`)
+       updateQuiz && dispatch(updateQuizById(updateQuiz?._id,value,setUpdateQuiz))
+    }
+    const handleQuizDelete=()=>{
+        dispatch(deleteQuizById(params.id!,navigate))
     }
 
     const handelQuizStartNavigation = () => {
@@ -52,6 +61,53 @@ function QuizDetails() {
     }
 
     //SECTION - Template
+  
+
+
+    const updateQuizTemplate = (
+        updateQuiz && <PopupModel>
+            <button onClick={() => setUpdateQuiz(null)}><CloseIcon /></button>
+            <Formik
+                initialValues={{
+                    Title: updateQuiz?.Name,
+                    Description: updateQuiz?.Description,
+                    NumberOfAttendByAnyone: Number(updateQuiz?.NumberOfAttendByAnyone)
+                }}
+                validationSchema={updateQuizSchema}
+                onSubmit={(value) => {
+                        handelQuizUpdate(value)
+                    // console.log(value);
+                }}
+            >
+                {({
+                    values,
+                    errors,
+                    touched,
+                    handleChange,
+                    handleSubmit
+                }) => (
+                    <form onSubmit={handleSubmit}>
+                        <label>
+                            <span>Quiz Name</span>
+                            <input type="text" name="Title" value={values.Title} readOnly disabled />
+                            
+                        </label>
+                        <label>
+                            <span>Description</span>
+                            <input type="text" name="Description" value={values.Description} onChange={handleChange} />
+                            {errors.Description && touched.Description && <span className="error">{errors.Description}</span>}
+                        </label>
+                        <label>
+                            <span>Maximum no. of attend</span>
+                            <input type="number" name="NumberOfAttendByAnyone" value={values.NumberOfAttendByAnyone} onChange={handleChange} />
+                            {errors.NumberOfAttendByAnyone && touched.NumberOfAttendByAnyone && <span className="error">{errors.NumberOfAttendByAnyone}</span>}
+                        </label>
+                        <button type="submit">UPDATE</button>
+                    </form>
+                )}
+            </Formik>
+        </PopupModel>
+    )
 
     //SECTION - useEffect
     useEffect(() => {
@@ -68,10 +124,10 @@ function QuizDetails() {
     }, [quizQuestion])
     //NOTE - 
     useEffect(() => {
-  
+
         setIsLiked(quiz?.LikeBy?.includes(loginDetails.id)!)
         setIsUnLiked(quiz?.UnLikeBy?.includes(loginDetails.id)!)
-    }, [loginDetails,quiz])
+    }, [loginDetails, quiz])
     //NOTE - Call if page reload after 1st time open
     useEffect(() => {
         !currentQuiz?.Name && params?.id && params?.userId
@@ -107,8 +163,12 @@ function QuizDetails() {
                             isQuizUpdate ? <>
                                 {/* //NOTE - If your created quiz then only update and add question */}
                                 {questions && <p><b>Note</b>{Number(quiz.NumberOfQuestion) - questions?.length} question missing</p>}
-                                <button style={{ border: "1px solid red" }}>Update</button>
+                                <button onClick={() => setUpdateQuiz(quiz)} style={{ border: "1px solid red" }} >Update</button>
                                 <button onClick={() => navigate(`/question/add/${quiz._id}`)}>Add Question</button>
+                                <br/>
+                                <br/>
+                                
+                                <button onClick={handleQuizDelete}>DELETE</button>
                             </> : <>
                                 <button onClick={handelQuizStartNavigation} style={{ border: "1px solid red" }}>Start</button>
                             </>
@@ -122,6 +182,7 @@ function QuizDetails() {
                 </> : <></>
             }
             {/* {isQuestionAdd && addQuestionModel} */}
+            {updateQuiz && updateQuizTemplate}
         </div>
     )
 }

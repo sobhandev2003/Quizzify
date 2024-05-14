@@ -48,6 +48,12 @@ export interface Quiz {
     UnLikeBy?:string[]
 }
 
+export interface QuizUpdateDetails {
+    Title?: string;
+    Description: string;
+    NumberOfAttendByAnyone: number ;
+}
+
 export interface Option{
     A:string;
     B:string;
@@ -70,7 +76,10 @@ export interface AttendQuizDetails{
         Quiz_Name: string,
         Quiz_Category: string,
         Score: number,
-        IsPassed:boolean
+        IsPassed:boolean,
+       
+
+
    
 }
 

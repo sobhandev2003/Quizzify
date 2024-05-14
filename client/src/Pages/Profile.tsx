@@ -5,7 +5,7 @@ import { UserDetails } from '../redux/reducer/userAccount';
 import { useAppDispatch, useAppSelector } from '../redux/store';
 import { drivePhotoBaseUrl } from '../App';
 import PreviousAttendQuizDetails from '../components/PreviousAttendQuizDetails';
-
+import Avatar from 'react-avatar';
 function Profile() {
   const dispatch = useAppDispatch()
   const [photo, setPhoto] = useState<File | null>(null)
@@ -69,18 +69,20 @@ function Profile() {
       <div>
         <h3>{userDetails.userName}</h3>
         <h5>{userDetails.email}</h5>
-        <img src={`${drivePhotoBaseUrl}${userDetails.profilePhotoId}`} alt="profile-photo" />
+        {/* <img src={`${drivePhotoBaseUrl}${userDetails.profilePhotoId}`} alt="profile-photo" /> */}
+        {userDetails.profilePhotoId? <img src={`${drivePhotoBaseUrl}${userDetails.profilePhotoId}`} alt="profile photo" className="profile-photo" />:<Avatar name={userDetails.userName} className="profile-photo" />}
+
         {/* //TODO -  */}
         <table>
           <thead>
-            <tr>
-             
-                
+            <tr> 
                 <th>Quiz ID</th>
                 <th>Quiz Name</th>
                 <th>Quiz Category</th>
                 <th>Score</th>
                 <th>Passed</th>
+                <th>Liked</th>
+                <th>Disliked</th>
               
             </tr>
           </thead>

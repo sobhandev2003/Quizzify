@@ -31,6 +31,13 @@ export const createNewQuestion = asyncHandler(async (req: Request, res: Response
         throw new Error("Option not valid.")
     }
 
+  
+    if (![Option.A, Option.B, Option.C, Option.D].includes(CorrectOption)) {
+        res.status(400);
+        throw new Error("Correct Option not valid.");
+    }
+    
+
     const userId = (req as CustomRequest).user.id;
     const quiz = await Quiz.findOne({ _id: quizId, User_Id: userId });
     if (!quiz) {
@@ -172,6 +179,10 @@ export const updateQuestion = asyncHandler(async (req: Request, res: Response) =
     }
     //NOTE - Update Question Correct Options
     if (CorrectOption && CorrectOption !== questionToUpdate.CorrectOption) {
+        if (![questionToUpdate.Option.A, questionToUpdate.Option.B, questionToUpdate.Option.C, questionToUpdate.Option.D].includes(CorrectOption)) {
+            res.status(400);
+            throw new Error("Correct Option not valid.");
+        }
         questionToUpdate.CorrectOption = CorrectOption
     }
     if (Marks && Marks > 0 && Marks !== questionToUpdate.Marks) {

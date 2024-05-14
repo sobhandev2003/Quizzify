@@ -23,7 +23,9 @@ export interface IUser extends Document {
     IsVerified: boolean;
     TotalAttendNumberOfQuiz: number;
     AttendQuizList: IAttendQuizDetails[];
-   
+
+    LikeQuizList?: string[];
+    DislikeQuizList?: string[];
     createdAt: Date;
     updatedAt: Date;
 }
@@ -108,6 +110,12 @@ const usersSchema = new mongoose.Schema({
         default: 0
     },
     AttendQuizList: [AttendQuizDetailsSchema],
+    LikeQuizList:{
+        type:[String]
+    },
+    DislikeQuizList:{
+        type:[String]
+    }
 
 },
     { timestamps: true }

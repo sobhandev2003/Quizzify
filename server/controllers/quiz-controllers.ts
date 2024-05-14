@@ -125,10 +125,10 @@ export const updateQuiz = asyncHandler(async (req: Request, res: Response) => {
         res.status(404)
         throw new Error("Quiz not found")
     }
-    if (Description && Description !== quiz.Description) {
+    if (Description && Description.length > 5 && Description !== quiz.Description) {
         quiz.Description = Description;
     }
-    if (NumberOfAttendByAnyone && NumberOfAttendByAnyone >= 0) {
+    if (NumberOfAttendByAnyone && Number(NumberOfAttendByAnyone) >= 0) {
         quiz.NumberOfAttendByAnyone = NumberOfAttendByAnyone;
     }
     await quiz.save();
@@ -215,9 +215,15 @@ export const deleteQuiz = asyncHandler(async (req: Request, res: Response) => {
             fileId: quiz.PosterId
         })
     }
-
-
     const response = await Quiz.deleteOne({ _id: quizId })
+    const quizQuestion = await QuizQuestionModel.findOne({
+        QuizId: quizId,
+        User_Id: userId
+    })
+
+    if (quizQuestion) {
+        await QuizQuestionModel.deleteOne({ _id: quizQuestion._id })
+    }
 
     res.status(200).json({ success: true, message: "Quiz deleted.", response })
 })
@@ -226,7 +232,9 @@ export const deleteQuiz = asyncHandler(async (req: Request, res: Response) => {
 export const updateLike = asyncHandler(async (req: Request, res: Response) => {
     const userId = (req as CustomRequest).user.id
     const user: IUser | null = await User.findById(userId);
+    
     const quizId = req.query.quizId;
+   
     if (!user) {
         res.status(404);
         throw new Error("User account not found.");
@@ -243,26 +251,35 @@ export const updateLike = asyncHandler(async (req: Request, res: Response) => {
 
     if (isAllReadyLike) {
         quiz.LikeBy?.splice(quiz.LikeBy?.indexOf(userId), 1) //Remove user id from array
+        if (user.LikeQuizList?.includes(quizId as string)) {
+            user.LikeQuizList?.splice(user.LikeQuizList?.indexOf(quizId as string), 1) //Remove quiz id from array
+        }
         msg = "Liked removed"
     }
     else {
         const isAllReadyUnlike = quiz.UnLikeBy?.includes(userId);
+
         if (isAllReadyUnlike) {
             quiz.UnLikeBy?.splice(quiz.UnLikeBy?.indexOf(userId), 1)
+            if (user.DislikeQuizList?.includes(quizId as string)) {
+                user.DislikeQuizList?.splice(user.DislikeQuizList.indexOf(quizId as string), 1) //Remove quiz id from array
+            }
         }
         quiz.LikeBy?.push(userId)
+        user.LikeQuizList?.push(quizId as string) //Add quiz id to array
         msg = "Like added"
     }
 
 
     await quiz.save();
+    await user.save()
     res.status(200).json({ success: true, message: msg });
 })
 
 //SECTION - Update Unlike in DB
 export const updateUnlike = asyncHandler(async (req: Request, res: Response) => {
     const userId = (req as CustomRequest).user.id
-    const user = await User.findById(userId);
+    const user: IUser | null = await User.findById(userId);
     const quizId = req.query.quizId;
     if (!user) {
         res.status(404);
@@ -274,11 +291,16 @@ export const updateUnlike = asyncHandler(async (req: Request, res: Response) => 
         throw new Error("Quiz not found.");
     }
     //TODO - 
-
+    let msg = ""
     const isAllReadyUnlike = quiz.UnLikeBy?.includes(userId);
     if (isAllReadyUnlike) {
 
         quiz.UnLikeBy?.splice(quiz.UnLikeBy?.indexOf(userId), 1) //Remove user id from array
+        if (user.DislikeQuizList?.includes(quizId as string)) {
+
+            user.DislikeQuizList?.splice(user.DislikeQuizList.indexOf(quizId as string), 1) //Remove quiz id from array
+        }
+        msg = "Disliked removed"
 
     }
     else {
@@ -287,12 +309,18 @@ export const updateUnlike = asyncHandler(async (req: Request, res: Response) => 
 
         if (isAllReadyLike) {
             quiz.LikeBy?.splice(quiz.LikeBy?.indexOf(userId), 1)
+            if (user.LikeQuizList?.includes(quizId as string)) {
+                user.LikeQuizList?.splice(user.LikeQuizList?.indexOf(quizId as string), 1) //Remove quiz id from array
+            }
         }
         quiz.UnLikeBy?.push(userId)
+        user.DislikeQuizList?.push(quizId as string) //Add quiz id to array
+        msg = "Disliked added"
     }
 
     await quiz.save();
-    res.status(200).json({ success: true, message: "Unlike added." });
+    await user.save()
+    res.status(200).json({ success: true, message: msg });
 });
 
 export const submitQuiz = asyncHandler(async (req: Request, res: Response) => {

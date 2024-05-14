@@ -1,14 +1,15 @@
 
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { AttendQuizDetails } from "../..";
-
 export interface UserDetails{
     id:string;
     email:string;
     userName:string;
     phoneNumber:string
     profilePhotoId:string;
-    AttendQuizzes:AttendQuizDetails[] |[]
+    AttendQuizzes:AttendQuizDetails[] |[];
+    LikedList?:string[] 
+    DisLikedList?:string[] 
 }
 
 export interface userAccountState{
@@ -22,7 +23,9 @@ const initialState:userAccountState={
             userName:"",
             phoneNumber:"",
             profilePhotoId:"",
-            AttendQuizzes:[] 
+            AttendQuizzes:[] ,
+            LikedList:[],
+            DisLikedList:[],
         }
 }
 
@@ -31,7 +34,7 @@ export const userAccountSlice=createSlice({
     initialState,
     reducers:{
         updateLoginUser:(state,action)=>{
-            // console.log(action.payload);   
+            console.log(action.payload);   
             state.loginUser=action.payload
         }
     }
