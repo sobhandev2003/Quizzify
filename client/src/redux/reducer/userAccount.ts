@@ -34,7 +34,7 @@ export const userAccountSlice=createSlice({
     initialState,
     reducers:{
         updateLoginUser:(state,action)=>{
-            console.log(action.payload);   
+            // console.log(action.payload);   
             state.loginUser=action.payload
         }
     }

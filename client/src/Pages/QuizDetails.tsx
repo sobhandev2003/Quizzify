@@ -30,7 +30,7 @@ function QuizDetails() {
     const [updateQuiz, setUpdateQuiz] = useState<Quiz | null>(null);
     const currentQuiz = useAppSelector(state => state.quizReducer.quiz);
     const isUpdateResponse = useAppSelector(state => state.quizReducer.isUpdate);
-    const quizQuestion = useAppSelector(state => state.quizReducer.allQuestion);
+    const quizQuestionDet = useAppSelector(state => state.quizReducer.quizQuestionDet);
     const loginDetails = useAppSelector(state => state.userAccountReducer.loginUser);
 
     //SECTION - 
@@ -119,9 +119,9 @@ function QuizDetails() {
     }, [currentQuiz, isUpdateResponse])
 
     useEffect(() => {
-        setQuestions(quizQuestion)
+        setQuestions(quizQuestionDet.allQuestion)
 
-    }, [quizQuestion])
+    }, [quizQuestionDet.allQuestion])
     //NOTE - 
     useEffect(() => {
 
@@ -133,7 +133,6 @@ function QuizDetails() {
         !currentQuiz?.Name && params?.id && params?.userId
             ? dispatch(getMyQuizById(params.id))
             : dispatch(getQuizById(params.id!));
-
 
     }, [])
 

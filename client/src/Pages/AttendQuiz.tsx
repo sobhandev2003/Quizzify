@@ -17,7 +17,7 @@ function AttendQuiz() {
     const [question, setQuestion] = useState<QuestionType | null>(null);
     const [qIndex, setQIndex] = useState<number>(-1);
     const currentQuiz = useAppSelector(state => state.quizReducer.quiz);
-    const allQuestion = useAppSelector(state => state.quizReducer.allQuestion);
+    const quizQuestionDet = useAppSelector(state => state.quizReducer.quizQuestionDet);
     const ans = useAppSelector(state => state.quizReducer.userAns)
     const handleEvaluationResult = () => {
         let marks = 0;
@@ -53,12 +53,12 @@ function AttendQuiz() {
     }
 
     useEffect(() => {
-        setQuestions(allQuestion);
+        setQuestions(quizQuestionDet.allQuestion);
         setQIndex(0)
-        setQuestion(allQuestion[0])
+        setQuestion(quizQuestionDet.allQuestion[0])
         // console.log(allQuestion);
 
-    }, [allQuestion])
+    }, [quizQuestionDet.allQuestion])
     useEffect(() => {
         questions && setQuestion(questions[qIndex])
     }, [qIndex])

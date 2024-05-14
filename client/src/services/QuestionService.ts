@@ -3,7 +3,7 @@ import { QuestionType } from "..";
 import { handelServerRequestError } from "../utils/handelServerRequestError";
 import toast from "react-hot-toast";
 import { AppDispatch } from "../redux/store";
-import { updateAllQuestion } from "../redux/reducer/QuizReducer";
+import { updateQuizQuestionDet } from "../redux/reducer/QuizReducer";
 //NOTE - Create new Question for a quiz
 export const addQuestion = (quizId: string, questionData: QuestionType) => async (dispatch: AppDispatch) => {
     // console.log(questionId, questionData);
@@ -34,7 +34,7 @@ export const getAllQuestion = (quizId: string) => async (dispatch: AppDispatch) 
             withCredentials: true
         })
         // console.log(response.data);
-        dispatch(updateAllQuestion(response.data))
+        dispatch(updateQuizQuestionDet(response.data))
 
     } catch (error) {
         handelServerRequestError(error)

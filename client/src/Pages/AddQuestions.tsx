@@ -1,7 +1,7 @@
 import { ErrorMessage, Field, FieldArray, Formik } from 'formik';
 import React, { useEffect, useRef, useState } from 'react'
 import { addQuestionSchema, updateQuestionSchema } from '../utils/validationSchema';
-import { QuestionType } from '..';
+import { QuestionType, Quiz } from '..';
 import { addQuestion, deleteQuestion, getAllQuestion, updateQuestion } from '../services/QuestionService';
 import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../redux/store';
@@ -9,15 +9,18 @@ import PopupModel from '../components/PopupModel';
 import CloseIcon from '@mui/icons-material/Close';
 import { RiEdit2Fill } from "react-icons/ri";
 import { MdDeleteForever } from "react-icons/md";
+import { getMyQuizById } from '../services/QuizService';
 function AllQuestions() {
     const dispatch = useAppDispatch()
     const params = useParams();
     const quizId = params.id
     const formRef = useRef<HTMLFormElement>(null)
+    const [quiz, setQuiz] = useState<Quiz>();
     const [isQuestionAdd, setIsQuestionAdd] = useState<boolean>(false);
     const [questionToUpdate, setQuestionToUpdate] = useState<QuestionType | null>(null);
     const [questions, setQuestions] = useState<QuestionType[] | null>(null);
-    const allQuestion = useAppSelector(state => state.quizReducer.allQuestion);
+    const quizQuestionDet = useAppSelector(state => state.quizReducer.quizQuestionDet);
+    const currentQuiz = useAppSelector(state => state.quizReducer.quiz);
     //NOTE -Handle create new Question
     const createQuestion = async (question: QuestionType) => {
         dispatch(addQuestion(quizId!, question));
@@ -36,12 +39,19 @@ function AllQuestions() {
     //SECTION - UseEffect
     useEffect(() => {
         setIsQuestionAdd(false)
-        setQuestions(allQuestion)
-    }, [allQuestion])
+        setQuestions(quizQuestionDet.allQuestion)
+    }, [quizQuestionDet])
+
+    useEffect(()=>{
+        setQuiz(currentQuiz)
+    },[currentQuiz])
 
     useEffect(() => {
         dispatch(getAllQuestion(quizId!))
+        !quiz && dispatch(getMyQuizById(quizId!))
     }, [])
+   
+
 
     //NOTE - Model for add a new Question
     const addQuestionModel = (
@@ -222,6 +232,7 @@ function AllQuestions() {
             {isQuestionAdd && addQuestionModel}
             <button onClick={() => setIsQuestionAdd(true)}> ADD </button>
             <div>
+            {questions && (quizQuestionDet.RemainingScore!==0 ||(Number(quiz?.NumberOfQuestion) - questions?.length)!==0) && <p className='text-red-600'><span><strong>Note:</strong>{Number(quiz?.NumberOfQuestion) - questions?.length} question missing.</span> <b>&&</b> <span>{quizQuestionDet.RemainingScore} to achieve total score.</span> </p>}
                 <table>
                     <thead>
                         <tr>
@@ -266,6 +277,7 @@ function AllQuestions() {
                     }
                     </tbody>
                 </table>
+
             </div>
             {questionToUpdate && updateQuestionModel}
         </>

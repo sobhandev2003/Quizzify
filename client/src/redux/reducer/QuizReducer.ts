@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { number } from "yup";
+import { QuestionType } from "../..";
 // import { Quiz } from "../..";
 // export interface Quiz
 const initialState = {
@@ -25,9 +26,17 @@ const initialState = {
     },
     isUpdate: false,
     // quizQuestion: [],
-    allQuestion: [],
+    quizQuestionDet: {
+
+        QuizId: "",
+        RemainingScore: undefined as undefined | number,
+        TotalScore: undefined as undefined | number,
+        User_Id: "",
+        allQuestion: [] as QuestionType[],
+    },
+
     userAns: [] as string[],
-    marks:undefined as number|undefined
+    marks: undefined as number | undefined
 }
 
 export const quizSlice = createSlice({
@@ -43,10 +52,14 @@ export const quizSlice = createSlice({
             state.isUpdate = action.payload
         },
 
-        updateAllQuestion: (state, action) => {
-            state.allQuestion = action.payload;
+        updateQuizQuestionDet:(state, action) => {
+            // console.log(action.payload);
 
-            state.userAns = Array(state.allQuestion.length).fill(null);
+            state.quizQuestionDet = action.payload;
+            state.quizQuestionDet.allQuestion=action.payload.AllQuestion
+            // console.log();
+            
+            state.userAns = Array(state.quizQuestionDet.allQuestion.length).fill(null);
 
 
         },
@@ -54,8 +67,8 @@ export const quizSlice = createSlice({
             const { index, ans } = action.payload;
             state.userAns[index] = ans;
         },
-        updateMarks:(state,action)=>{
-            state.marks=action.payload;
+        updateMarks: (state, action) => {
+            state.marks = action.payload;
         }
     }
 })
@@ -63,7 +76,7 @@ export const quizSlice = createSlice({
 export const { setCurrentQuiz,
     setIsUpdate,
     // setQuestion,
-    updateAllQuestion,
+    updateQuizQuestionDet,
     updateUserAns,
     updateMarks } = quizSlice.actions
 export default quizSlice.reducer

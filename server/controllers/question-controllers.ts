@@ -95,6 +95,8 @@ export const createNewQuestion = asyncHandler(async (req: Request, res: Response
 
 //NOTE - get all quiz question
 export const getAllQuizQuestion = asyncHandler(async (req: Request, res: Response) => {
+    // console.log("ch");
+    
     const quizId = req.query.quizId;
 
     const quiz = await Quiz.findById(quizId);
@@ -103,12 +105,12 @@ export const getAllQuizQuestion = asyncHandler(async (req: Request, res: Respons
         throw new Error("Quiz not found.")
     }
     const quizQuestion = await QuizQuestionModel.findOne({ QuizId: quizId });
-    if (!quiz) {
+    if (!quizQuestion) {
         res.status(404);
         throw new Error("Quiz Question not found.")
     }
-
-    res.status(200).json(quizQuestion?.AllQuestion);
+        // console.log(quizQuestion)
+    res.status(200).json(quizQuestion);
 })
 
 //NOTE - Update question

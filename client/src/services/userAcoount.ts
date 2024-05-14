@@ -31,6 +31,7 @@ export const loginExistingUser =  (loginData: LoginDetails)=>async(dispatch:AppD
             {
                 withCredentials: true
             })
+console.log(response.data);
 
         if (response.data) {
             // getUserDetails(dispatch)
