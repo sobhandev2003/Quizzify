@@ -64,11 +64,7 @@ function Navbar() {
             </div>
             {!isMobile ? (
               <>
-                <div>
-                  <NavLink to="/quiz/create">Create Quiz</NavLink>
-                  <NavLink to="/quiz/my-quiz">My Quiz</NavLink>
-
-                </div>
+              
                 <div className="profile-details">
                   {profilePhotoId ? <img src={`${drivePhotoBaseUrl}${profilePhotoId}`} alt="profile photo" className="profile-photo" onClick={() => setIsProfileDetails(!isProfileDetails)} /> : <Avatar name={userDetails.userName} className="profile-photo" onClick={() => setIsProfileDetails(!isProfileDetails)} />}
 
@@ -85,7 +81,11 @@ function Navbar() {
                           <h4>{userDetails.email}</h4>
                         </div>
                       </NavLink>
-                      <button onClick={logOutAccount}>Log out</button>
+                      <div>
+                        <NavLink to="/quiz/create">Create Quiz</NavLink>
+                        <NavLink to="/quiz/my-quiz">My Quiz</NavLink>
+                        <button onClick={logOutAccount}>Log out</button>
+                      </div>
                     </div>
                   }
                 </div>
