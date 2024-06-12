@@ -3,7 +3,7 @@ import { Quiz, QuizUpdateDetails } from ".."
 import { useAppDispatch, useAppSelector } from "../redux/store";
 import { drivePhotoBaseUrl } from "../App";
 import Avatar from 'react-avatar'
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { deleteQuizById, getMyQuizById, getQuizById, updateLike, updateQuizById, updateUnlike } from "../services/QuizService";
 
 import { getAllQuestion } from "../services/QuestionService";
@@ -13,7 +13,11 @@ import PopupModel from "../components/PopupModel";
 import { Formik, useFormik } from "formik";
 import { updateQuizSchema } from "../utils/validationSchema";
 import CloseIcon from '@mui/icons-material/Close';
+import SomethingWrong from "../components/SomethingWrong";
 function QuizDetails() {
+    const location = useLocation();
+    // console.log(location.state);
+
     const navigate = useNavigate();
     const params = useParams();
 
@@ -28,8 +32,10 @@ function QuizDetails() {
     const [isLiked, setIsLiked] = useState<boolean>(false)
     const [isUnLiked, setIsUnLiked] = useState<boolean>(false)
     const [updateQuiz, setUpdateQuiz] = useState<Quiz | null>(null);
-    const currentQuiz = useAppSelector(state => state.quizReducer.quiz);
-    const isUpdateResponse = useAppSelector(state => state.quizReducer.isUpdate);
+    //FIXME - 
+    // const currentQuiz = useAppSelector(state => state.quizReducer.quiz);
+    // const isUpdateResponse = useAppSelector(state => state.quizReducer.isUpdate);
+
     const quizQuestionDet = useAppSelector(state => state.quizReducer.quizQuestionDet);
     const loginDetails = useAppSelector(state => state.userAccountReducer.loginUser);
 
@@ -48,12 +54,12 @@ function QuizDetails() {
         dispatch(updateUnlike(params.id!))
     }
     //SECTION - Navigation
-    const handelQuizUpdate = (value:QuizUpdateDetails): void => {
+    const handelQuizUpdate = (value: QuizUpdateDetails): void => {
         // navigate(`/quiz/update/${quiz?._id}`)
-       updateQuiz && dispatch(updateQuizById(updateQuiz?._id,value,setUpdateQuiz))
+        updateQuiz && dispatch(updateQuizById(updateQuiz?._id, value, setUpdateQuiz))
     }
-    const handleQuizDelete=()=>{
-        dispatch(deleteQuizById(params.id!,navigate))
+    const handleQuizDelete = () => {
+        dispatch(deleteQuizById(params.id!, navigate))
     }
 
     const handelQuizStartNavigation = () => {
@@ -61,7 +67,7 @@ function QuizDetails() {
     }
 
     //SECTION - Template
-  
+
 
 
     const updateQuizTemplate = (
@@ -75,7 +81,7 @@ function QuizDetails() {
                 }}
                 validationSchema={updateQuizSchema}
                 onSubmit={(value) => {
-                        handelQuizUpdate(value)
+                    handelQuizUpdate(value)
                     // console.log(value);
                 }}
             >
@@ -90,7 +96,7 @@ function QuizDetails() {
                         <label>
                             <span>Quiz Name</span>
                             <input type="text" name="Title" value={values.Title} readOnly disabled />
-                            
+
                         </label>
                         <label>
                             <span>Description</span>
@@ -110,30 +116,24 @@ function QuizDetails() {
     )
 
     //SECTION - useEffect
-    useEffect(() => {
-        setQuiz(currentQuiz)
-        setIsQuizUpdate(isUpdateResponse)
-        if (currentQuiz._id) {
-            dispatch(getAllQuestion(currentQuiz._id))
-        }
-    }, [currentQuiz, isUpdateResponse])
-
+    //NOTE - sett all question
     useEffect(() => {
         setQuestions(quizQuestionDet.allQuestion)
-
     }, [quizQuestionDet.allQuestion])
-    //NOTE - 
-    useEffect(() => {
 
+    //NOTE - Update like and unLike
+    useEffect(() => {
         setIsLiked(quiz?.LikeBy?.includes(loginDetails.id)!)
         setIsUnLiked(quiz?.UnLikeBy?.includes(loginDetails.id)!)
     }, [loginDetails, quiz])
-    //NOTE - Call if page reload after 1st time open
-    useEffect(() => {
-        !currentQuiz?.Name && params?.id && params?.userId
-            ? dispatch(getMyQuizById(params.id))
-            : dispatch(getQuizById(params.id!));
 
+    //NOTE - When page load run just that time
+    useEffect(() => {
+        if (location.state) {
+            setQuiz(location.state.quiz)
+            setIsQuizUpdate(location.state.isUpdate)
+            location.state.quiz && dispatch(getAllQuestion(location.state.quiz._id))
+        }
     }, [])
 
 
@@ -164,9 +164,9 @@ function QuizDetails() {
                                 {questions && <p><b>Note</b>{Number(quiz.NumberOfQuestion) - questions?.length} question missing</p>}
                                 <button onClick={() => setUpdateQuiz(quiz)} style={{ border: "1px solid red" }} >Update</button>
                                 <button onClick={() => navigate(`/question/add/${quiz._id}`)}>Add Question</button>
-                                <br/>
-                                <br/>
-                                
+                                <br />
+                                <br />
+
                                 <button onClick={handleQuizDelete}>DELETE</button>
                             </> : <>
                                 <button onClick={handelQuizStartNavigation} style={{ border: "1px solid red" }}>Start</button>
@@ -178,7 +178,9 @@ function QuizDetails() {
                         <button onClick={handelLike}>{isLiked ? <AiFillLike /> : <SlLike />}</button>
                         <button onClick={handelUnlike}>{isUnLiked ? <AiFillDislike /> : <SlDislike />}</button>
                     </div>
-                </> : <></>
+                </> : <>
+                <SomethingWrong/>
+                </>
             }
             {/* {isQuestionAdd && addQuestionModel} */}
             {updateQuiz && updateQuizTemplate}

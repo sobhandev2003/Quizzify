@@ -60,7 +60,7 @@ function AllQuestions() {
             <div>
                 <Formik
                     initialValues={{
-                        QuestionNumber: "",
+                        QuestionNumber: String(questions?.length!+1),
                         Question: "",
                         Description: "",
                         Option: {
@@ -84,7 +84,7 @@ function AllQuestions() {
                     }) => (
                         <form ref={formRef} onSubmit={handleSubmit}>
                             <label>
-                                <input type="text" name="QuestionNumber" onChange={handleChange} value={values.QuestionNumber} required />
+                                <input type="text" name="QuestionNumber" onChange={handleChange} value={values.QuestionNumber} required  readOnly/>
                                 <span>Question Number</span>
                                 {errors.QuestionNumber && touched.QuestionNumber && <span className='error'>{errors.QuestionNumber}</span>}
                             </label>
@@ -170,7 +170,7 @@ function AllQuestions() {
                     }) => (
                         <form ref={formRef} onSubmit={handleSubmit}>
                             <label>
-                                <input type="text" name="QuestionNumber" onChange={handleChange} value={values.QuestionNumber} />
+                                <input type="text" name="QuestionNumber" onChange={handleChange} value={values.QuestionNumber} readOnly/>
                                 <span>Question Number</span>
                                 {errors.QuestionNumber && touched.QuestionNumber && <span className='error'>{errors.QuestionNumber}</span>}
                             </label>

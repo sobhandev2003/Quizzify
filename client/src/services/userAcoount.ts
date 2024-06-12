@@ -22,7 +22,7 @@ export const registerNewAccount = async (userData: UserRegisterDetails) => {
 }
 
 //SECTION - Login Existing User
-export const loginExistingUser =  (loginData: LoginDetails)=>async(dispatch:AppDispatch) => {
+export const loginExistingUser = (loginData: LoginDetails) => async (dispatch: AppDispatch) => {
 
     try {
         const response = await axios.post(
@@ -31,7 +31,6 @@ export const loginExistingUser =  (loginData: LoginDetails)=>async(dispatch:AppD
             {
                 withCredentials: true
             })
-console.log(response.data);
 
         if (response.data) {
             // getUserDetails(dispatch)
@@ -47,7 +46,7 @@ console.log(response.data);
 
 //SECTION - Logout current login user account
 
-export const logoutLoginUser =  ( navigate: any) =>async(dispatch:AppDispatch)=> {
+export const logoutLoginUser = (navigate: any) => async (dispatch: AppDispatch) => {
     try {
         const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/users/logout`, {
             withCredentials: true,
@@ -65,7 +64,7 @@ export const logoutLoginUser =  ( navigate: any) =>async(dispatch:AppDispatch)=>
 }
 
 //SECTION - Gate user details
-export const getUserDetails =() =>async(dispatch:AppDispatch)=>{
+export const getUserDetails = () => async (dispatch: AppDispatch) => {
     try {
 
         const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/users/`, {
@@ -89,7 +88,7 @@ export const getUserDetails =() =>async(dispatch:AppDispatch)=>{
 }
 
 
-export const updateProfilePhoto =  (photo: File)=>async(dispatch:AppDispatch) => {
+export const updateProfilePhoto = (photo: File) => async (dispatch: AppDispatch) => {
     try {
 
         const formData = new FormData()
@@ -109,7 +108,7 @@ export const updateProfilePhoto =  (photo: File)=>async(dispatch:AppDispatch) =>
 
         if (data.success) {
             toast.success("Successfully update profile photo")
-           dispatch( getUserDetails())
+            dispatch(getUserDetails())
         }
         else {
             toast.error(data.message)
@@ -121,15 +120,15 @@ export const updateProfilePhoto =  (photo: File)=>async(dispatch:AppDispatch) =>
 }
 
 //SECTION - Add current submit quiz details
-export const addCurrentSubmitQuizDetails = (quizDetails: AttendQuizDetails) => async (dispatch: AppDispatch)=> {
+export const addCurrentSubmitQuizDetails = (quizDetails: AttendQuizDetails) => async (dispatch: AppDispatch) => {
     try {
-        
-        const response = await axios.patch(`${import.meta.env.VITE_BASE_URL}/users/quiz/attend`,quizDetails,{
+
+        const response = await axios.patch(`${import.meta.env.VITE_BASE_URL}/users/quiz/attend`, quizDetails, {
             withCredentials: true, // include cookies
         })
         // console.log(response.data);
         dispatch(getUserDetails())
-        
+
 
     } catch (error) {
         handelServerRequestError(error)

@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import  { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../redux/store'
 import { AttendQuizDetails, QuestionType } from '..';
 import { getAllQuestion } from '../services/QuestionService';
-import { useNavigate, useParams } from 'react-router-dom';
+import {  useNavigate, useParams } from 'react-router-dom';
 import QuestionTemplate from '../components/QuestionTemplet';
-import { updateMarks } from '../redux/reducer/QuizReducer';
 import { getQuizById } from '../services/QuizService';
 import { addCurrentSubmitQuizDetails } from '../services/userAcoount';
 
 function AttendQuiz() {
+
     const navigate = useNavigate()
     const dispatch = useAppDispatch();
     const params = useParams();
@@ -21,13 +21,10 @@ function AttendQuiz() {
     const ans = useAppSelector(state => state.quizReducer.userAns)
     const handleEvaluationResult = () => {
         let marks = 0;
-        // console.log(ans);
-
         questions?.forEach((question, index) => {
             if (question.CorrectOption === ans[index]) {
                 marks += question.Marks;
-            }
-            // console.log(question,index,ans[index]);  
+            } 
         })
 
         const quizDetails:AttendQuizDetails = {
@@ -39,9 +36,7 @@ function AttendQuiz() {
         }
         // console.log(marks);
         dispatch(addCurrentSubmitQuizDetails(quizDetails))
-        dispatch(updateMarks(marks));
-
-        navigate(`/result/${quizId}`)
+        navigate(`/result/${quizId}`,{state:{quiz:currentQuiz,marks}})
     }
     const handelRenderNextQuestion = () => {
         if (qIndex < questions?.length! - 1)
@@ -69,7 +64,7 @@ function AttendQuiz() {
     }, [])
     return (
         <div>
-            <h1>Start Quiz</h1>
+            {/* <h1>Start Quiz</h1> */}
 
             {question && <>  <QuestionTemplate question={question} index={qIndex} />
                 {qIndex > 0 && <button onClick={handelRenderPreviousQuestion}>Previous</button>}

@@ -54,17 +54,17 @@ function Navbar() {
 
   return (
     <div className="navbar">
+      <div className="logo-div">
+        <Link to="/">
+          <img src={`${drivePhotoBaseUrl}1Sx55Q0riatzqgISY51ZCbrsGcT4Zlmk3`} alt="logo" className="logo" />
+        </Link>
+      </div>
       {
         isLogin ? (
           <div className="after-login">
-            <div className="logo-div">
-              <Link to="/">
-                <img src={`${drivePhotoBaseUrl}1Sx55Q0riatzqgISY51ZCbrsGcT4Zlmk3`} alt="logo" className="logo" />
-              </Link>
-            </div>
             {!isMobile ? (
               <>
-              
+
                 <div className="profile-details">
                   {profilePhotoId ? <img src={`${drivePhotoBaseUrl}${profilePhotoId}`} alt="profile photo" className="profile-photo" onClick={() => setIsProfileDetails(!isProfileDetails)} /> : <Avatar name={userDetails.userName} className="profile-photo" onClick={() => setIsProfileDetails(!isProfileDetails)} />}
 
@@ -98,11 +98,7 @@ function Navbar() {
             )}
           </div>)
 
-          : (<div className="before-login">
-            <NavLink to="register">Register</NavLink>
-            <NavLink to="login">Login</NavLink>
-
-          </div>)
+          : (<></>)
 
       }
     </div>

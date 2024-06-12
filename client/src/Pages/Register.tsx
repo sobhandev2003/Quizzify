@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../redux/store";
 import { useEffect } from "react";
 import { registerUserSchema } from "../utils/validationSchema";
+import { Link } from "react-router-dom";
 function Register() {
   const navigate=useNavigate()
   const LoginDetails = useAppSelector(state => state.userAccountReducer.loginUser);
@@ -94,7 +95,9 @@ function Register() {
           )}
         </Formik>
       </div>
-
+          <div>
+            <Link to={"/login"}>Login </Link>
+          </div>
     </div>
 
   )

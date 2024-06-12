@@ -9,6 +9,7 @@ import {  useAppDispatch, useAppSelector } from '../redux/store';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loginValidationSchema } from '../utils/validationSchema';
+import { Link } from 'react-router-dom';
 
 
 
@@ -76,6 +77,10 @@ const Login = () => {
           Log In
         </Button>
       </form>
+      <div>
+        <Link to={"/forget-password"}>Forgot password</Link>
+        <Link to={"/register"}>Register a account</Link>
+      </div>
     </div>
   );
 };
