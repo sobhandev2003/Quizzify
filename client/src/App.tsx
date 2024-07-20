@@ -37,7 +37,7 @@ const dispatch=useAppDispatch()
   return (
     <>
     <Navbar/>
-    {/* <Popu */}
+    <div className='padding-68'>
     <Routes>
       <Route   path='/users/verify-email/:userId/:VerificationToken' element={<EmailVerification/>}/>
       <Route path='/users/reset-password/:userId/:VerificationToken' element={<ResetPassword/>}/>
@@ -59,6 +59,7 @@ const dispatch=useAppDispatch()
     </Route>
     <Route path='/result/:id' element={<Result/>}/>
     </Routes>
+    </div>
     </>
   )
 }

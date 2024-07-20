@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { drivePhotoBaseUrl } from "../App";
 import { UserDetails } from "../redux/reducer/userAccount";
 import Avatar from "react-avatar"
+import { HiOutlineLogout } from "react-icons/hi";
 function Navbar() {
   const [isLogin, setIsLogin] = useState<Boolean>(false)
   const [profilePhotoId, setProfilePhotId] = useState<string | null>(null)
@@ -59,48 +60,55 @@ function Navbar() {
           <img src={`${drivePhotoBaseUrl}1Sx55Q0riatzqgISY51ZCbrsGcT4Zlmk3`} alt="logo" className="logo" />
         </Link>
       </div>
-      {
-        isLogin ? (
-          <div className="after-login">
-            {!isMobile ? (
-              <>
+      <div>
+        {
+          isLogin ? (
+            <div className="after-login">
+              {!isMobile ? (
+                <>
 
-                <div className="profile-details">
-                  {profilePhotoId ? <img src={`${drivePhotoBaseUrl}${profilePhotoId}`} alt="profile photo" className="profile-photo" onClick={() => setIsProfileDetails(!isProfileDetails)} /> : <Avatar name={userDetails.userName} className="profile-photo" onClick={() => setIsProfileDetails(!isProfileDetails)} />}
+                  <div className="profile-details">
 
-
-                  {
-                    isProfileDetails &&
-                    <div className="details-section">
-                      <NavLink to={`/${userDetails.userName}`} className="user-basic-details">
-                        {/* <img src={`${drivePhotoBaseUrl}${profilePhotoId}`} alt="profile photo" className="user-photo" /> */}
-                        {profilePhotoId ? <img src={`${drivePhotoBaseUrl}${profilePhotoId}`} alt="profile photo" className="user-photo" /> : <Avatar name={userDetails.userName} className="profile-photo" />}
-
-                        <div>
-                          <h3>{userDetails.userName}</h3>
-                          <h4>{userDetails.email}</h4>
-                        </div>
-                      </NavLink>
-                      <div>
-                        <NavLink to="/quiz/create">Create Quiz</NavLink>
-                        <NavLink to="/quiz/my-quiz">My Quiz</NavLink>
-                        <button onClick={logOutAccount}>Log out</button>
-                      </div>
+                    <div className="profile-photo-container">
+                      {profilePhotoId ? <img src={`${drivePhotoBaseUrl}${profilePhotoId}`} alt="profile photo" className="profile-photo" onClick={() => setIsProfileDetails(!isProfileDetails)} /> : <Avatar name={userDetails.userName} className="profile-photo" size="70" onClick={() => setIsProfileDetails(!isProfileDetails)} />}
                     </div>
-                  }
-                </div>
 
-              </>
-            ) : (
-              <>
 
-              </>
-            )}
-          </div>)
+                    {
+                      isProfileDetails &&
+                      <div className="details-section mt-2 rounded-2xl p-4 flex flex-col gap-4 items-start bg-slate-300">
+                        <NavLink to={`/${userDetails.userName}`} className="user-basic-details">
+                          {/* <img src={`${drivePhotoBaseUrl}${profilePhotoId}`} alt="profile photo" className="user-photo" /> */}
+                          <div className="profile-photo-container">
+                            {profilePhotoId ? <img src={`${drivePhotoBaseUrl}${profilePhotoId}`} alt="profile photo" className="profile-photo" onClick={() => setIsProfileDetails(!isProfileDetails)} /> : <Avatar name={userDetails.userName} className="profile-photo" size="70" onClick={() => setIsProfileDetails(!isProfileDetails)} />}
+                          </div>
 
-          : (<></>)
+                          <div>
+                            <h3>{userDetails.userName}</h3>
+                            {/* <h4>{userDetails.email}</h4> */}
+                          </div>
+                        </NavLink>
+                        <div className=" flex flex-wrap  items-start justify-around gap-2 ">
+                          <NavLink className="bg-slate-100 h-20 w-28 p-2 flex items-center justify-center rounded-2xl" to="/quiz/create">Create Quiz</NavLink>
+                          <NavLink className="bg-slate-100 h-20 w-28 p-2 flex items-center justify-center rounded-2xl" to="/quiz/my-quiz">My Quiz</NavLink>
+                        </div>
+                        <button className="flex items-center justify-center gap-1 text-lg text-red-700" onClick={logOutAccount}><HiOutlineLogout /> <span>Log out</span></button>
+                      </div>
+                    }
+                  </div>
 
-      }
+                </>
+              ) : (
+                <>
+
+                </>
+              )}
+            </div>)
+
+            : (<></>)
+
+        }
+      </div>
     </div>
   )
 }

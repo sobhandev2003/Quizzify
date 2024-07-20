@@ -4,14 +4,14 @@ import { createQuiz } from '../services/QuizService';
 import { useFormik } from 'formik';
 import * as Yup from "yup"
 import { useAppSelector } from '../redux/store';
-
+import createQuizBg from '../assets/create-quize-bg.jpg'
 function CreateQuiz() {
 
-    const navigate=useNavigate();
+    const navigate = useNavigate();
 
-    const loginDetails=useAppSelector(state=>state.userAccountReducer.loginUser)
+    const loginDetails = useAppSelector(state => state.userAccountReducer.loginUser)
     //NOTE - 
-  
+
     const quizSchema = Yup.object({
         Name: Yup.string().required('Name is required'),
 
@@ -49,7 +49,7 @@ function CreateQuiz() {
     //NOTE - 
     const handelCreateQuizRequest = (value: any) => {
         // console.log(quizDetails);
-        createQuiz(value,navigate,loginDetails.id)
+        createQuiz(value, navigate, loginDetails.id)
     }
 
 
@@ -74,65 +74,82 @@ function CreateQuiz() {
 
     return (
         <div className='create-quiz' >
+            <img src={createQuizBg} alt="" className='background-img'/>
             <form className='quiz-create-form' onSubmit={formik.handleSubmit} >
-
-                <label >
-                    <input type='text' name='Name' onChange={formik.handleChange} value={formik.values.Name} required />
-                    <span>Name</span>
+                <div>
+                    <label >
+                        <span>Name</span>
+                        <input type='text' name='Name' className='' onChange={formik.handleChange} value={formik.values.Name} required />
+                    </label>
                     {formik.errors.Name && formik.touched.Name && <span className='error'>{formik.errors.Name}</span>}
-                </label>
 
-                <label >
-                    <input type='text' name='Description' onChange={formik.handleChange} value={formik.values.Description} required />
-                    <span>Description</span>
+                </div>
+
+                <div>
+                    <label >
+                        <span>Description</span>
+                        <input type='text' name='Description' onChange={formik.handleChange} value={formik.values.Description} required />
+                    </label>
                     {formik.errors.Description && formik.touched.Description && <span className='error'>{formik.errors.Description}</span>}
-                </label>
 
-                <label >
-                    <input type='text' name='Category' onChange={formik.handleChange} value={formik.values.Category} required />
-                    <span>Category</span>
+                </div>
+                <div>
+                    <label >
+                        <span>Category</span>
+                        <input type='text' name='Category' onChange={formik.handleChange} value={formik.values.Category} required />
+                    </label>
                     {formik.errors.Category && formik.touched.Category && <span className='error'>{formik.errors.Category}</span>}
-                </label>
-
-                <label >
-                    <input type='text' name='Topic' onChange={formik.handleChange} value={formik.values.Topic} />
-                    <span>Topic</span>
+                </div>
+                <div>
+                    <label >
+                        <span>Topic</span>
+                        <input type='text' name='Topic' onChange={formik.handleChange} value={formik.values.Topic} />
+                    </label>
                     {formik.errors.Topic && formik.touched.Topic && <span className='error'>{formik.errors.Topic}</span>}
-                </label>
+                </div>
 
-                <label >
-                    <input type='text' name='NumberOfQuestion' onChange={formik.handleChange} value={formik.values.NumberOfQuestion} required />
-                    <span>Number of question</span>
+                <div>
+                    <label >
+                        <span>Number of question</span>
+                        <input type='text' name='NumberOfQuestion' onChange={formik.handleChange} value={formik.values.NumberOfQuestion} required />
+                    </label>
                     {formik.errors.NumberOfQuestion && formik.touched.NumberOfQuestion && <span className='error'>{formik.errors.NumberOfQuestion}</span>}
-                </label>
+                </div>
 
-                <label >
-                    <input type='text' name='TotalScore' onChange={formik.handleChange} value={formik.values.TotalScore} required />
-                    <span>Total score</span>
+                <div>
+                    <label >
+                        <span>Total score</span>
+                        <input type='text' name='TotalScore' onChange={formik.handleChange} value={formik.values.TotalScore} required />
+                    </label>
                     {formik.errors.TotalScore && formik.touched.TotalScore && <span className='error'>{formik.errors.TotalScore}</span>}
-                </label>
-
-                <label >
-                    <input type='text' name='NumberOfAttendByAnyone' onChange={formik.handleChange} value={formik.values.NumberOfAttendByAnyone} />
-                    <span>Maximum number of attend</span>
+                </div>
+                <div>
+                    <label >
+                        <span>Maximum number of attend</span>
+                        <input type='text' name='NumberOfAttendByAnyone' onChange={formik.handleChange} value={formik.values.NumberOfAttendByAnyone} />
+                    </label>
                     {formik.errors.NumberOfAttendByAnyone && formik.touched.NumberOfAttendByAnyone && <span className='error'>{formik.errors.NumberOfAttendByAnyone
                     }</span>}
-                </label>
-                <label >
-                    <input type='text' name='PassingScore' onChange={formik.handleChange} value={formik.values.PassingScore} />
-                    <span>Passing marks</span>
+                </div>
+
+                <div>
+                    <label >
+                        <span>Passing marks</span>
+                        <input type='text' name='PassingScore' onChange={formik.handleChange} value={formik.values.PassingScore} />
+                    </label>
                     {formik.errors.PassingScore && formik.touched.PassingScore && <span className='error'>{formik.errors.PassingScore}</span>}
-                </label>
-
-                <label >
-                    <input type="file" name="poster"
-                        onChange={(e) => formik.setFieldValue("poster", e.target.files![0])}
-                    />
-                    <span>Poster</span>
+                </div>
+                <div>
+                    <label >
+                        <span>Poster</span>
+                        <input type="file" name="poster"
+                            onChange={(e) => formik.setFieldValue("poster", e.target.files![0])}
+                        />
+                    </label>
                     {formik.errors.poster && formik.touched.poster && <span className='error'>{formik.errors.poster}</span>}
-                </label>
+                </div>
 
-                <button type="submit">Create</button>
+                <button className="create-btn" type="submit">Create</button>
             </form>
 
         </div>

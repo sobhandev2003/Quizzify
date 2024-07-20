@@ -10,10 +10,14 @@ import { getAllQuestion } from "../services/QuestionService";
 import { SlLike, SlDislike } from "react-icons/sl";
 import { AiFillLike, AiFillDislike } from "react-icons/ai";
 import PopupModel from "../components/PopupModel";
-import { Formik, useFormik } from "formik";
+import { Formik } from "formik";
 import { updateQuizSchema } from "../utils/validationSchema";
 import CloseIcon from '@mui/icons-material/Close';
 import SomethingWrong from "../components/SomethingWrong";
+import backgroundImg from '../assets/blogonline.jpg'
+import { RiEdit2Fill } from "react-icons/ri";
+import { MdDeleteForever } from "react-icons/md";
+import { BsBuildingFillAdd } from "react-icons/bs";
 function QuizDetails() {
     const location = useLocation();
     // console.log(location.state);
@@ -139,46 +143,49 @@ function QuizDetails() {
 
 
     return (
-        <div>
+        <div className="w-screen flex justify-center">
+            <img className="fixed left-0  w-full h-full -z-10" src={backgroundImg} alt="" />
+            {/* <img className="fixed left-0  w-full h-full -z-10" src="https://media.istockphoto.com/id/1478776181/video/flying-pink-neon-question-marks-on-a-black-background-3d-animation-question-mark-looping.jpg?s=640x640&k=20&c=5iaBIXjs7ydswVcvKqjjqRySe6ksY2njjWn4h3SYQFQ=" alt="" /> */}
             {
-                quiz ? <>
-                    <div>
+                quiz ? <div className=" text-white  pt-10 flex flex-col gap-8 ">
+                    {/* <div>
                         {quiz.PosterId ? <img src={`${drivePhotoBaseUrl}${quiz.PosterId}`} alt='🧐' /> : <Avatar name={quiz.Name}></Avatar>}
-                    </div>
+                    </div> */}
                     <div>
-                        <h2><b>Name:</b>{quiz.Name}</h2>
-                        <h3><b>Category:</b>{quiz.Category}</h3>
-                        <h3><b>Topic:</b>{quiz.Topic}</h3>
-                        <p><b>Description:</b>{quiz.Description}</p>
-                        <p><b>Number of Question:</b>{quiz.NumberOfQuestion}</p>
-                        <p><b>Total Score:</b>{quiz.TotalScore}</p>
-                        <p><b>Maximum no. of  attend:</b>{quiz.NumberOfAttendByAnyone && Number(quiz.NumberOfAttendByAnyone) > 0 && quiz.NumberOfAttendByAnyone}</p>
-                        <p><b>Created At:</b>{quiz.createdAt && new Date(quiz.createdAt).toLocaleString()} </p>
-                        <p><b>Total number of submit:</b>{quiz.TotalNumberOfSubmit}</p>
+                        <p className=" text-4xl font-semibold text-teal-500">{quiz.Name}</p>
+                        <p className=" text-2xl  text-teal-500">{quiz.Category}</p>
+                        <p className=" text-2xl  text-teal-500">{quiz.Topic}</p>
+                        <p className=" text-lg  text-amber-500">{quiz.Description}</p>
+                        <p className=" text-lg flex gap-2  text-amber-500"><b className=" text-slate-400">Number of Question:</b>{quiz.NumberOfQuestion}</p>
+                        <p className=" text-lg flex gap-2 text-amber-500"><b className=" text-slate-400">Total Score:</b>{quiz.TotalScore}</p>
+                        <p className=" text-lg flex gap-2 text-amber-500"><b className=" text-slate-400">Maximum no. of  attend:</b>{quiz.NumberOfAttendByAnyone && Number(quiz.NumberOfAttendByAnyone) > 0 && quiz.NumberOfAttendByAnyone}</p>
+                        <p className=" text-lg flex gap-2 text-amber-500"><b className=" text-slate-400">Created At:</b>{quiz.createdAt && new Date(quiz.createdAt).toLocaleString()} </p>
+                        <p className=" text-lg flex gap-2 text-amber-500"><b className=" text-slate-400">Total number of submit:</b>{quiz.TotalNumberOfSubmit}</p>
+
 
                     </div>
                     <div>
                         {
-                            isQuizUpdate ? <>
+                            isQuizUpdate ? <div className="flex flex-col">
                                 {/* //NOTE - If your created quiz then only update and add question */}
-                                {questions && <p><b>Note</b>{Number(quiz.NumberOfQuestion) - questions?.length} question missing</p>}
-                                <button onClick={() => setUpdateQuiz(quiz)} style={{ border: "1px solid red" }} >Update</button>
-                                <button onClick={() => navigate(`/question/add/${quiz._id}`)}>Add Question</button>
-                                <br />
-                                <br />
-
-                                <button onClick={handleQuizDelete}>DELETE</button>
-                            </> : <>
+                                {questions && <p className=" text-orange-400"><b>Note</b>{Number(quiz.NumberOfQuestion) - questions?.length} question missing</p>}
+                               <div className="flex gap-4 p-4 flex-wrap">
+                               <button className="flex items-center justify-center gap-2 text-xl font-medium text-orange-500" onClick={() => setUpdateQuiz(quiz)}  ><RiEdit2Fill /> <span>Update</span></button>
+                               <button className="flex items-center justify-center gap-2 text-xl font-medium text-lime-600" onClick={() => navigate(`/question/add/${quiz._id}`)}><BsBuildingFillAdd /><span>Add Question</span> </button>
+                                <button className="flex items-center justify-center gap-2 text-xl font-medium text-red-600" onClick={handleQuizDelete}><MdDeleteForever /><span>DELETE</span></button>
+                               </div>
+                               
+                            </div> : <div>
                                 <button onClick={handelQuizStartNavigation} style={{ border: "1px solid red" }}>Start</button>
-                            </>
+                            </div>
                         }
 
                     </div>
-                    <div>
+                    <div className="flex gap-5">
                         <button onClick={handelLike}>{isLiked ? <AiFillLike /> : <SlLike />}</button>
                         <button onClick={handelUnlike}>{isUnLiked ? <AiFillDislike /> : <SlDislike />}</button>
                     </div>
-                </> : <>
+                </div> : <>
                 <SomethingWrong/>
                 </>
             }

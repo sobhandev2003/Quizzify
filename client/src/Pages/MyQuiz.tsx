@@ -4,7 +4,7 @@ import { Quiz } from '..'
 import QuizCard from '../components/QuizCard'
 import { useNavigate } from 'react-router-dom';
 import {  useAppSelector } from '../redux/store';
-
+import BackgroundImg from "../assets/New-blog-graphic.jpg";
 function MyQuiz() {
   const navigate = useNavigate()
   const [quizzes, setQuizzes] = useState<Quiz[] | null>(null);
@@ -20,11 +20,12 @@ function MyQuiz() {
     })
   }, [])
   return (
-    <div>
-      {quizzes ? <>
+    <div className='w-screen min-h-screen relative'>
+      <img src={BackgroundImg}  className=" fixed -z-10 w-full h-full" alt="" />
+      {quizzes ? <div className=' p-4'>
 
         {quizzes.map((quiz) => (
-          <div key={quiz._id} onClick={()=>handelNavigate(quiz)}>
+          <div  key={quiz._id} onClick={()=>handelNavigate(quiz)}>
             <QuizCard
               _id={quiz._id}
               user_id={quiz.User_Id}
@@ -39,7 +40,7 @@ function MyQuiz() {
             />
           </div>
         ))}
-      </> : <></>}
+      </div> : <></>}
     </div>
   )
 }

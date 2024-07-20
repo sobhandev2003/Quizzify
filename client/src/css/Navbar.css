@@ -1,14 +1,17 @@
 .navbar {
-    height: 6vw;
+    height: 70px;
     width: 100vw;
-    /* position: fixed;
-    top: 0; */
-    position: sticky;
+    position: fixed;
     top: 0;
+    /* position: sticky;
+    top: 0; */
     background: #f5f6fa;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+    padding-left: 30px;
+    padding-right: 30px;
+    z-index: 10000;
 
 }
 
@@ -28,7 +31,7 @@
 }
 
 .logo-div {
-    height: 100%;
+    height: 80%;
     width: 10%;
     /* border: 1px solid red; */
     display: flex;
@@ -42,7 +45,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow:  20px 20px 60px #bebebe,-20px -20px 60px #ffffff;
+    /* box-shadow:  20px 20px 60px #bebebe,-20px -20px 60px #ffffff; */
 }
 
 .logo {
@@ -67,23 +70,27 @@
     justify-content: center;
     position: relative;
 }
+.profile-photo-container{
+        height: 70px;
+        width: 70px;
+        display: contents;
+}
 
 .profile-photo {
-    height: 4rem;
-    width: 4rem;
+   
+    height: 100%; 
+    width: 100%; 
     cursor: pointer;
-    border-radius: 50%;
+    border-radius: 70%;
 }
 
 .profile-details .details-section {
-    border: 1px solid rgb(60, 234, 21);
+    /* border: 1px solid rgb(60, 234, 21); */
     position: absolute;
     top: 110%;
     right: 50%;
     width: 20rem;
     height: 25rem;
-    transition: 2s ease-in-out;
-
 }
 
 .user-photo {
@@ -96,7 +103,7 @@
 
 .user-basic-details {
     padding-left: 8px;
-    border: 1px solid red;
+    /* border: 1px solid red; */
     display: flex;
     align-items: center;
     gap: .5rem;
