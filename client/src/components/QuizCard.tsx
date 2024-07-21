@@ -27,9 +27,6 @@ interface propsType {
 }
 
 function QuizCard(props: propsType) {
-    // const {_id,name,description,category,topic,posterId} = props
-    // console.log(props.unlike);
-    // const [user,setUser]=useState<UserDetails|null>(null)
     const [isLiked,setIsLiked]=useState<boolean>(false)
     const [isUnLiked,setIsUnLiked]=useState<boolean>(false)
     const loginUser=useAppSelector(state=>state.userAccountReducer.loginUser);
@@ -43,7 +40,7 @@ function QuizCard(props: propsType) {
     )
 
     return (
-        <Card sx={{ maxWidth: 400 }}>
+        <Card sx={{ width: 350 }}>
             {props.posterId?<CardMedia
                 sx={{ height: 140 }}
                 image={`${drivePhotoBaseUrl}${props.posterId}`}

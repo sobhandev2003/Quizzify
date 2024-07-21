@@ -5,29 +5,27 @@
     bottom: 0;
     top: 0;
     background-color: rgba(189, 189, 189, 0.9);
-    z-index: 2000;
-
+    z-index: 5000;
+    overflow-x: auto;
 }
 
 .modal-container {
-    padding-top: 10px;
+    /* padding-top: 10px; */
    background-color: white;
    border-radius: 10px;
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    min-width: 40vw;
-    max-width: 95vw;
-   height: 50vh;
-   max-height: 60vh;
-    
+    width: max-content;
+    height: max-content;
     color: rgb(2, 2, 2);
-    z-index: 2002;
+    z-index: 5002;
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-direction: column;
+    overflow-x: auto;
 }
 
 

@@ -76,7 +76,8 @@ function QuizDetails() {
 
     const updateQuizTemplate = (
         updateQuiz && <PopupModel>
-            <button onClick={() => setUpdateQuiz(null)}><CloseIcon /></button>
+            <div className="relative p-4">
+            <button className=" absolute top-0 right-0 text-red-700"  onClick={() => setUpdateQuiz(null)}><CloseIcon /></button>
             <Formik
                 initialValues={{
                     Title: updateQuiz?.Name,
@@ -96,26 +97,27 @@ function QuizDetails() {
                     handleChange,
                     handleSubmit
                 }) => (
-                    <form onSubmit={handleSubmit}>
-                        <label>
+                    <form className="flex flex-col gap-4 items-start" onSubmit={handleSubmit} >
+                        <label className="flex gap-2">
                             <span>Quiz Name</span>
                             <input type="text" name="Title" value={values.Title} readOnly disabled />
 
                         </label>
-                        <label>
+                        <label className="flex gap-2">
                             <span>Description</span>
                             <input type="text" name="Description" value={values.Description} onChange={handleChange} />
                             {errors.Description && touched.Description && <span className="error">{errors.Description}</span>}
                         </label>
-                        <label>
+                        <label className="flex gap-2">
                             <span>Maximum no. of attend</span>
                             <input type="number" name="NumberOfAttendByAnyone" value={values.NumberOfAttendByAnyone} onChange={handleChange} />
                             {errors.NumberOfAttendByAnyone && touched.NumberOfAttendByAnyone && <span className="error">{errors.NumberOfAttendByAnyone}</span>}
                         </label>
-                        <button type="submit">UPDATE</button>
+                        <button className=" mt-6 self-center" type="submit">UPDATE</button>
                     </form>
                 )}
             </Formik>
+            </div>
         </PopupModel>
     )
 
@@ -133,6 +135,7 @@ function QuizDetails() {
 
     //NOTE - When page load run just that time
     useEffect(() => {
+        //FIXME - Fixed this get quiz details by API call 
         if (location.state) {
             setQuiz(location.state.quiz)
             setIsQuizUpdate(location.state.isUpdate)
@@ -148,9 +151,11 @@ function QuizDetails() {
             {/* <img className="fixed left-0  w-full h-full -z-10" src="https://media.istockphoto.com/id/1478776181/video/flying-pink-neon-question-marks-on-a-black-background-3d-animation-question-mark-looping.jpg?s=640x640&k=20&c=5iaBIXjs7ydswVcvKqjjqRySe6ksY2njjWn4h3SYQFQ=" alt="" /> */}
             {
                 quiz ? <div className=" text-white  pt-10 flex flex-col gap-8 ">
-                    {/* <div>
-                        {quiz.PosterId ? <img src={`${drivePhotoBaseUrl}${quiz.PosterId}`} alt='🧐' /> : <Avatar name={quiz.Name}></Avatar>}
-                    </div> */}
+                    {quiz.PosterId && <div>
+                        <img src={`${drivePhotoBaseUrl}${quiz.PosterId}`} alt='🧐' />
+                    </div>
+                    }
+
                     <div>
                         <p className=" text-4xl font-semibold text-teal-500">{quiz.Name}</p>
                         <p className=" text-2xl  text-teal-500">{quiz.Category}</p>
@@ -169,12 +174,12 @@ function QuizDetails() {
                             isQuizUpdate ? <div className="flex flex-col">
                                 {/* //NOTE - If your created quiz then only update and add question */}
                                 {questions && <p className=" text-orange-400"><b>Note</b>{Number(quiz.NumberOfQuestion) - questions?.length} question missing</p>}
-                               <div className="flex gap-4 p-4 flex-wrap">
-                               <button className="flex items-center justify-center gap-2 text-xl font-medium text-orange-500" onClick={() => setUpdateQuiz(quiz)}  ><RiEdit2Fill /> <span>Update</span></button>
-                               <button className="flex items-center justify-center gap-2 text-xl font-medium text-lime-600" onClick={() => navigate(`/question/add/${quiz._id}`)}><BsBuildingFillAdd /><span>Add Question</span> </button>
-                                <button className="flex items-center justify-center gap-2 text-xl font-medium text-red-600" onClick={handleQuizDelete}><MdDeleteForever /><span>DELETE</span></button>
-                               </div>
-                               
+                                <div className="flex gap-4 p-4 flex-wrap">
+                                    <button className="flex items-center justify-center gap-2 text-xl font-medium text-orange-500" onClick={() => setUpdateQuiz(quiz)}  ><RiEdit2Fill /> <span>Update</span></button>
+                                    <button className="flex items-center justify-center gap-2 text-xl font-medium text-lime-600" onClick={() => navigate(`/question/add/${quiz._id}`)}><BsBuildingFillAdd /><span>Add Question</span> </button>
+                                    <button className="flex items-center justify-center gap-2 text-xl font-medium text-red-600" onClick={handleQuizDelete}><MdDeleteForever /><span>DELETE</span></button>
+                                </div>
+
                             </div> : <div>
                                 <button onClick={handelQuizStartNavigation} style={{ border: "1px solid red" }}>Start</button>
                             </div>
@@ -182,11 +187,11 @@ function QuizDetails() {
 
                     </div>
                     <div className="flex gap-5">
-                        <button onClick={handelLike}>{isLiked ? <AiFillLike /> : <SlLike />}</button>
-                        <button onClick={handelUnlike}>{isUnLiked ? <AiFillDislike /> : <SlDislike />}</button>
+                        <button className=" text-2xl" onClick={handelLike}>{isLiked ? <AiFillLike /> : <SlLike />}</button>
+                        <button className=" text-2xl" onClick={handelUnlike}>{isUnLiked ? <AiFillDislike /> : <SlDislike />}</button>
                     </div>
                 </div> : <>
-                <SomethingWrong/>
+                    <SomethingWrong />
                 </>
             }
             {/* {isQuestionAdd && addQuestionModel} */}

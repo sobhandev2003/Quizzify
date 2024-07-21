@@ -25,7 +25,7 @@ function MyQuiz() {
       {quizzes ? <div className=' p-4'>
 
         {quizzes.map((quiz) => (
-          <div  key={quiz._id} onClick={()=>handelNavigate(quiz)}>
+          <div className=' min-w-60 w-max' key={quiz._id} onClick={()=>handelNavigate(quiz)}>
             <QuizCard
               _id={quiz._id}
               user_id={quiz.User_Id}

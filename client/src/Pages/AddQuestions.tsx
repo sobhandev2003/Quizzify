@@ -1,5 +1,5 @@
-import { ErrorMessage, Field, FieldArray, Formik } from 'formik';
-import React, { useEffect, useRef, useState } from 'react'
+import { Formik } from 'formik';
+import { useEffect, useRef, useState } from 'react'
 import { addQuestionSchema, updateQuestionSchema } from '../utils/validationSchema';
 import { QuestionType, Quiz } from '..';
 import { addQuestion, deleteQuestion, getAllQuestion, updateQuestion } from '../services/QuestionService';
@@ -10,6 +10,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { RiEdit2Fill } from "react-icons/ri";
 import { MdDeleteForever } from "react-icons/md";
 import { getMyQuizById } from '../services/QuizService';
+import { MdAddCircle } from "react-icons/md";
 function AllQuestions() {
     const dispatch = useAppDispatch()
     const params = useParams();
@@ -42,107 +43,24 @@ function AllQuestions() {
         setQuestions(quizQuestionDet.allQuestion)
     }, [quizQuestionDet])
 
-    useEffect(()=>{
+    useEffect(() => {
         setQuiz(currentQuiz)
-    },[currentQuiz])
+    }, [currentQuiz])
 
     useEffect(() => {
         dispatch(getAllQuestion(quizId!))
         !quiz && dispatch(getMyQuizById(quizId!))
     }, [])
-   
 
 
-    //NOTE - Model for add a new Question
-    const addQuestionModel = (
-        <PopupModel >
-            <button onClick={() => setIsQuestionAdd(false)}><CloseIcon /></button>
-            <div>
-                <Formik
-                    initialValues={{
-                        QuestionNumber: String(questions?.length!+1),
-                        Question: "",
-                        Description: "",
-                        Option: {
-                            A: "",
-                            B: "",
-                            C: "",
-                            D: ""
-                        },
-                        CorrectOption: "",
-                        Marks: 0
-                    }}
 
-                    validationSchema={addQuestionSchema}
-                    onSubmit={(value) => createQuestion(value)}
-                >
-                    {({ values,
-                        errors,
-                        touched,
-                        handleChange,
-                        handleSubmit
-                    }) => (
-                        <form ref={formRef} onSubmit={handleSubmit}>
-                            <label>
-                                <input type="text" name="QuestionNumber" onChange={handleChange} value={values.QuestionNumber} required  readOnly/>
-                                <span>Question Number</span>
-                                {errors.QuestionNumber && touched.QuestionNumber && <span className='error'>{errors.QuestionNumber}</span>}
-                            </label>
-                            <label>
-                                <input type="text" name="Question" onChange={handleChange} value={values.Question} required />
-                                <span>Question </span>
-                                {errors.Question && touched.Question && <span className='error'>{errors.Question}</span>}
-                            </label>
-                            <label>
-                                <input type="text" name="Description" onChange={handleChange} value={values.Description} required />
-                                <span>Description</span>
-                                {errors.Description && touched.Description && <span className='error'>{errors.Description}</span>}
-                            </label>
 
-                            <label>
-                                <input type="text" name="Option.A" onChange={handleChange} value={values.Option.A} required />
-                                <span>Option A</span>
-                                {errors.Option?.A && touched.Option?.A && <span className='error'>{errors.Option.A}</span>}
-                            </label>
-                            <label>
-                                <input type="text" name="Option.B" onChange={handleChange} value={values.Option.B} required />
-                                <span>Option B</span>
-                                {errors.Option?.B && touched.Option?.B && <span className='error'>{errors.Option.B}</span>}
-                            </label>
-                            <label>
-                                <input type="text" name="Option.C" onChange={handleChange} value={values.Option.C} required />
-                                <span>Option C</span>
-                                {errors.Option?.C && touched.Option?.C && <span className='error'>{errors.Option.C}</span>}
-                            </label>
-                            <label>
-                                <input type="text" name="Option.D" onChange={handleChange} value={values.Option.D} required />
-                                <span>Option D</span>
-                                {errors.Option?.D && touched.Option?.D && <span className='error'>{errors.Option.D}</span>}
-                            </label>
-
-                            <label>
-                                <input type="text" name="CorrectOption" onChange={handleChange} value={values.CorrectOption} required />
-                                <span>Correct Answer</span>
-                                {errors.CorrectOption && touched.CorrectOption && <span className='error'>{errors.CorrectOption}</span>}
-                            </label>
-                            <label>
-                                <input type="number" name="Marks" onChange={handleChange} value={values.Marks} required />
-                                <span>Marks</span>
-                                {errors.Marks && touched.Marks && <span className='error'>{errors.Marks}</span>}
-                            </label>
-                            <button type="submit" className="register px-4 rounded-md">Add</button>
-                        </form>
-                    )}
-
-                </Formik>
-            </div>
-        </PopupModel>
-    )
     //NOTE -Model for  Update question
     const updateQuestionModel = (
         questionToUpdate && <PopupModel >
-            <button onClick={() => setQuestionToUpdate(null)}><CloseIcon /></button>
-            <div>
+            <div className="relative p-4">
+                <button className=" absolute top-0 right-0 text-red-700" onClick={() => setQuestionToUpdate(null)}><CloseIcon /></button>
+
                 <Formik
                     initialValues={{
                         QuestionNumber: questionToUpdate.QuestionNumber,
@@ -168,55 +86,75 @@ function AllQuestions() {
                         handleChange,
                         handleSubmit
                     }) => (
-                        <form ref={formRef} onSubmit={handleSubmit}>
-                            <label>
-                                <input type="text" name="QuestionNumber" onChange={handleChange} value={values.QuestionNumber} readOnly/>
-                                <span>Question Number</span>
+                        <form className="flex flex-col gap-4 items-start" ref={formRef} onSubmit={handleSubmit}>
+                            <div>
+                                <label className="flex gap-2">
+                                    <span>Question Number</span>
+                                    <input type="text" name="QuestionNumber" onChange={handleChange} value={values.QuestionNumber} readOnly />
+                                </label>
                                 {errors.QuestionNumber && touched.QuestionNumber && <span className='error'>{errors.QuestionNumber}</span>}
-                            </label>
-                            <label>
-                                <input type="text" name="Question" onChange={handleChange} value={values.Question} />
-                                <span>Question </span>
+                            </div>
+                            <div>
+                                <label className="flex gap-2">
+                                    <span>Question </span>
+                                    <input type="text" name="Question" onChange={handleChange} value={values.Question} />
+                                </label>
                                 {errors.Question && touched.Question && <span className='error'>{errors.Question}</span>}
-                            </label>
-                            <label>
-                                <input type="text" name="Description" onChange={handleChange} value={values.Description} />
-                                <span>Description</span>
+                            </div>
+                            <div>
+                                <label className="flex gap-2">
+                                    <span>Description</span>
+                                    <input type="text" name="Description" onChange={handleChange} value={values.Description} />
+                                </label>
                                 {errors.Description && touched.Description && <span className='error'>{errors.Description}</span>}
-                            </label>
+                            </div>
 
-                            <label>
-                                <input type="text" name="Option.A" onChange={handleChange} value={values.Option.A} />
-                                <span>Option A</span>
+                            <div>
+                                <label className="flex gap-2">
+                                    <span>Option A</span>
+                                    <input type="text" name="Option.A" onChange={handleChange} value={values.Option.A} />
+                                </label>
                                 {errors.Option?.A && touched.Option?.A && <span className='error'>{errors.Option.A}</span>}
-                            </label>
-                            <label>
-                                <input type="text" name="Option.B" onChange={handleChange} value={values.Option.B} />
-                                <span>Option B</span>
+                            </div>
+                            <div className="flex gap-2">
+                                <label className="flex gap-2">
+                                    <span>Option B</span>
+                                    <input type="text" name="Option.B" onChange={handleChange} value={values.Option.B} />
+                                </label>
                                 {errors.Option?.B && touched.Option?.B && <span className='error'>{errors.Option.B}</span>}
-                            </label>
-                            <label>
-                                <input type="text" name="Option.C" onChange={handleChange} value={values.Option.C} />
-                                <span>Option C</span>
-                                {errors.Option?.C && touched.Option?.C && <span className='error'>{errors.Option.C}</span>}
-                            </label>
-                            <label>
-                                <input type="text" name="Option.D" onChange={handleChange} value={values.Option.D} />
-                                <span>Option D</span>
-                                {errors.Option?.D && touched.Option?.D && <span className='error'>{errors.Option.D}</span>}
-                            </label>
+                            </div>
 
-                            <label>
-                                <input type="text" name="CorrectOption" onChange={handleChange} value={values.CorrectOption} />
-                                <span>CorrectOption</span>
+                            <div>
+                                <label className="flex gap-2">
+                                    <span>Option C</span>
+                                    <input type="text" name="Option.C" onChange={handleChange} value={values.Option.C} />
+                                </label>
+                                {errors.Option?.C && touched.Option?.C && <span className='error'>{errors.Option.C}</span>}
+                            </div>
+                            <div>
+                                <label className="flex gap-2">
+                                    <span>Option D</span>
+                                    <input type="text" name="Option.D" onChange={handleChange} value={values.Option.D} />
+                                </label>
+                                {errors.Option?.D && touched.Option?.D && <span className='error'>{errors.Option.D}</span>}
+                            </div>
+
+                            <div>
+                                <label className="flex gap-2">
+                                    <span>CorrectOption</span>
+                                    <input type="text" name="CorrectOption" onChange={handleChange} value={values.CorrectOption} />
+                                </label>
                                 {errors.CorrectOption && touched.CorrectOption && <span className='error'>{errors.CorrectOption}</span>}
-                            </label>
-                            <label>
-                                <input type="number" name="Marks" onChange={handleChange} value={values.Marks} />
-                                <span>Marks</span>
+                            </div>
+
+                            <div>
+                                <label className="flex gap-2">
+                                    <span>Marks</span>
+                                    <input type="number" name="Marks" onChange={handleChange} value={values.Marks} />
+                                </label>
                                 {errors.Marks && touched.Marks && <span className='error'>{errors.Marks}</span>}
-                            </label>
-                            <button type="submit" className="register px-4 rounded-md">UPDATE</button>
+                            </div>
+                            <button type="submit" className="register px-4 rounded-md self-center">UPDATE</button>
                         </form>
                     )}
 
@@ -228,11 +166,112 @@ function AllQuestions() {
 
 
     return (
-        <>
-            {isQuestionAdd && addQuestionModel}
-            <button onClick={() => setIsQuestionAdd(true)}> ADD </button>
+        <div className='flex flex-col gap-16 items-center p-4'>
+
+            {!isQuestionAdd && <button className='mt-8 button-88 flex gap-3' onClick={() => setIsQuestionAdd(true)}><MdAddCircle fontSize={20} /> <span>Add New Question</span> </button>}
+            {isQuestionAdd && <div className='relative p-4'>
+
+                <Formik
+                    initialValues={{
+                        QuestionNumber: String(questions?.length! + 1),
+                        Question: "",
+                        Description: "",
+                        Option: {
+                            A: "",
+                            B: "",
+                            C: "",
+                            D: ""
+                        },
+                        CorrectOption: "",
+                        Marks: 0
+                    }}
+
+                    validationSchema={addQuestionSchema}
+                    onSubmit={(value) => createQuestion(value)}
+                >
+                    {({ values,
+                        errors,
+                        touched,
+                        handleChange,
+                        handleSubmit
+                    }) => (
+                        <form className='add-question-form flex flex-col gap-2 items-start ' ref={formRef} onSubmit={handleSubmit}>
+                            <div >
+                                <label className='flex gap-2 items-center min-w-fit'>
+                                    <span>Question Number</span>
+                                    <input type="text" name="QuestionNumber" onChange={handleChange} value={values.QuestionNumber} required readOnly />
+                                </label>
+                                {errors.QuestionNumber && touched.QuestionNumber && <span className='error'>{errors.QuestionNumber}</span>}
+                            </div>
+                            <div>
+                                <label className='flex gap-2 items-center min-w-fit'>
+                                    <span>Question </span>
+                                    <input type="text" name="Question" onChange={handleChange} value={values.Question} required />
+                                </label>
+                                {errors.Question && touched.Question && <span className='error'>{errors.Question}</span>}
+                            </div>
+                            <div>
+                                <label className='flex gap-2 items-center min-w-fit'>
+                                    <span>Description</span>
+                                    <input type="text" name="Description" onChange={handleChange} value={values.Description} required />
+                                </label>
+                                {errors.Description && touched.Description && <span className='error'>{errors.Description}</span>}
+                            </div>
+                            <div>
+                                <label className='flex gap-2 items-center min-w-fit'>
+                                    <span>Option A</span>
+                                    <input type="text" name="Option.A" onChange={handleChange} value={values.Option.A} required />
+                                </label>
+                                {errors.Option?.A && touched.Option?.A && <span className='error'>{errors.Option.A}</span>}
+                            </div>
+                            <div>
+                                <label className='flex gap-2 items-center min-w-fit'>
+                                    <span>Option B</span>
+                                    <input type="text" name="Option.B" onChange={handleChange} value={values.Option.B} required />
+                                </label>
+                                {errors.Option?.B && touched.Option?.B && <span className='error'>{errors.Option.B}</span>}
+                            </div>
+                            <div>
+                                <label className='flex gap-2 items-center min-w-fit'>
+                                    <span>Option C</span>
+                                    <input type="text" name="Option.C" onChange={handleChange} value={values.Option.C} required />
+                                </label>
+                                {errors.Option?.C && touched.Option?.C && <span className='error'>{errors.Option.C}</span>}
+                            </div>
+                            <div>
+                                <label className='flex gap-2 items-center min-w-fit'>
+                                    <span>Option D</span>
+                                    <input type="text" name="Option.D" onChange={handleChange} value={values.Option.D} required />
+                                </label>
+                                {errors.Option?.D && touched.Option?.D && <span className='error'>{errors.Option.D}</span>}
+                            </div>
+
+                            <div>
+                                <label className='flex gap-2 items-center min-w-fit'>
+                                    <span>Correct Answer</span>
+                                    <input type="text" name="CorrectOption" onChange={handleChange} value={values.CorrectOption} required />
+                                </label>
+                                {errors.CorrectOption && touched.CorrectOption && <span className='error'>{errors.CorrectOption}</span>}
+                            </div>
+                            <div>
+                                <label className='flex gap-2 items-center min-w-fit'>
+                                    <span>Marks</span>
+                                    <input type="number" name="Marks" onChange={handleChange} value={values.Marks} required />
+                                </label>
+                                {errors.Marks && touched.Marks && <span className='error'>{errors.Marks}</span>}
+                            </div>
+                            <div className='flex gap-8 justify-center mt-5' >
+                                <button className='button-37 flex gap-3' type="submit" >Add</button>
+                                <button className="text-red-700" onClick={() => setIsQuestionAdd(false)}><CloseIcon /> <span> Cancel</span></button>
+
+                            </div>
+                        </form>
+                    )}
+
+                </Formik>
+            </div>}
             <div>
-            {questions && (quizQuestionDet.RemainingScore!==0 ||(Number(quiz?.NumberOfQuestion) - questions?.length)!==0) && <p className='text-red-600'><span><strong>Note:</strong>{Number(quiz?.NumberOfQuestion) - questions?.length} question missing.</span> <b>&&</b> <span>{quizQuestionDet.RemainingScore} to achieve total score.</span> </p>}
+                {questions && (quizQuestionDet.RemainingScore !== 0 || (Number(quiz?.NumberOfQuestion) - questions?.length) !== 0) && <p className='text-red-600'><span><strong>Note:</strong>{Number(quiz?.NumberOfQuestion) - questions?.length} question missing.</span> <b>&&</b> <span>{quizQuestionDet.RemainingScore} to achieve total score.</span> </p>}
                 <table>
                     <thead>
                         <tr>
@@ -253,34 +292,34 @@ function AllQuestions() {
                         </tr>
                     </thead>
                     <tbody>
-                    {
-                        questions && questions.map((question, index) => (
-                            <tr key={question._id} >
-                                <td>{index }</td>
-                                <td>{question.QuestionNumber}</td>
-                                <td>{question.Question}</td>
-                                <td>{question.Description}</td>
-                                <td>{question.Option.A}</td>
-                                <td>{question.Option.B}</td>
-                                <td>{question.Option.C}</td>
-                                <td>{question.Option.D}</td>
-                                <td>{question.CorrectOption}</td>
-                                <td>{question.Marks}</td>
-                                <td><RiEdit2Fill onClick={() => setQuestionToUpdate(question)} /></td>
-                                <td><MdDeleteForever  onClick={() => handelQuestionDelete(question._id!)} /></td>
-                                {/* <button onClick={() => setQuestionToUpdate(question)}>Update</button>
+                        {
+                            questions && questions.map((question, index) => (
+                                <tr key={question._id} >
+                                    <td>{index}</td>
+                                    <td>{question.QuestionNumber}</td>
+                                    <td>{question.Question}</td>
+                                    <td>{question.Description}</td>
+                                    <td>{question.Option.A}</td>
+                                    <td>{question.Option.B}</td>
+                                    <td>{question.Option.C}</td>
+                                    <td>{question.Option.D}</td>
+                                    <td>{question.CorrectOption}</td>
+                                    <td>{question.Marks}</td>
+                                    <td><RiEdit2Fill onClick={() => setQuestionToUpdate(question)} /></td>
+                                    <td><MdDeleteForever onClick={() => handelQuestionDelete(question._id!)} /></td>
+                                    {/* <button onClick={() => setQuestionToUpdate(question)}>Update</button>
                                 <button onClick={() => handelQuestionDelete(question._id!)}>Delete</button> */}
-                               
-                            </tr>
-                        ))
 
-                    }
+                                </tr>
+                            ))
+
+                        }
                     </tbody>
                 </table>
 
             </div>
             {questionToUpdate && updateQuestionModel}
-        </>
+        </div>
     )
 }
 

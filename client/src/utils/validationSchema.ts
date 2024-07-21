@@ -47,7 +47,7 @@ export const addQuestionSchema =  yup.object({
 });
 //NOTE - Update Question
 export const updateQuestionSchema =  yup.object({
-    QuestionNumber: yup.string().max(4, 'Question number must be at most 4 characters'),
+    // QuestionNumber: yup.string().max(4, 'Question number must be at most 4 characters'),
     Question: yup.string(),
     Description: yup.string(),
     // Option: optionSchema,
